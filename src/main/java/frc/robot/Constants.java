@@ -64,6 +64,23 @@ public final class Constants {
 
     }
 
+    public static enum Drive {
+        RIGHT_FRONT(0), 
+        RIGHT_BACK(0),  
+        LEFT_FRONT(0),
+        LEFT_BACK(0);
+
+        private int PortValue;
+
+        Drive(int PortValue) {
+            this.PortValue = PortValue;
+        }
+
+        public int getPort() {
+            return PortValue;
+        }
+    }
+
     /**
      * Enum for the OI, including buttons and controllers.
      */
