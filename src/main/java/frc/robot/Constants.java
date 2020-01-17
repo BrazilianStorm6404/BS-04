@@ -81,6 +81,34 @@ public final class Constants {
         }
     }
 
+    public static enum Climb {
+        TELESCOPIC(0), 
+        CLIMB_LEFT(0),  
+        CLIMB_RIGHT(0);
+
+
+        private int PortValue;
+
+        Climb(int PortValue) {
+            this.PortValue = PortValue;
+        }
+
+        public int getPort() {
+            return PortValue;
+        }
+
+        private static double climb_speed = 1;
+        private static double telescopic_speed = 1;
+
+        public static double getClimbSpeed() {
+            return climb_speed;
+        }
+
+        public static double getTelescopicSpeed() {
+            return telescopic_speed;
+        }
+    }
+
     /**
      * Enum for the OI, including buttons and controllers.
      */
