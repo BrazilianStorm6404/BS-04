@@ -17,7 +17,7 @@ public class Tracker extends SubsystemBase {
   // MOTORS
   WPI_VictorSPX HorizontalTurner;
   WPI_VictorSPX VerticalTurner;
-
+  WPI_VictorSPX Shooter;
 
   /**
    * Creates a new Tracker.
@@ -28,6 +28,7 @@ public class Tracker extends SubsystemBase {
     // MOTORS
     VerticalTurner = new WPI_VictorSPX(Constants.Motors.VERTICAL_TURNER.getPort());
     HorizontalTurner = new WPI_VictorSPX(Constants.Motors.HORIZONTAL_TURNER.getPort());
+    Shooter = new WPI_VictorSPX(Constants.Motors.LAUNCHER_PC.getPort());
   }
 
   @Override
@@ -49,5 +50,9 @@ public class Tracker extends SubsystemBase {
    */
   public void turnHorizontal(boolean direction) {
     HorizontalTurner.set(direction ? 0.7 : -0.7);
+  }
+
+  public void shoot() {
+    Shooter.set(Constants.Motors.getShootingSpeed());
   } 
 }

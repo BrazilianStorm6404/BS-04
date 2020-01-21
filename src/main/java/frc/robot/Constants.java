@@ -62,6 +62,12 @@ public final class Constants {
             return PortValue;
         }
 
+        private static double shooting_speed = 0.7;
+
+        public static double getShootingSpeed() {
+            return shooting_speed;
+        }
+
     }
 
     public static enum Drive {
@@ -130,4 +136,5 @@ public final class Constants {
             return PortValue;
         }
     }
+
 }
