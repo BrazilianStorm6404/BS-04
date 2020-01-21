@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.Drivetrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -28,7 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // SUBSYSTEMS
-
+  private final Drivetrain mDrivetrain = new Drivetrain();
 
   // CONTROLLERS
   private XboxController Controller1;
@@ -58,6 +59,7 @@ public class RobotContainer {
     // Configure the button bindings
     setControllers(1);
     configureButtonBindings();
+    init();
   }
 
   /**
@@ -69,10 +71,13 @@ public class RobotContainer {
   private void configureButtonBindings() {
     ButtonA_1.whenPressed(() -> LauncherPC.set(1.0))
     .whenReleased(() -> LauncherPC.set(0.0));
+
+    
     
     //Logger
     CommandScheduler.getInstance().onCommandExecute(command -> { //can.get().toString();
       Shuffleboard.getTab("Logger").add("Log", "");
+      mDrivetrain.arcadeDrive(Controller1.getX(), Controller1.getY());
     });
   }
 
@@ -102,17 +107,11 @@ public class RobotContainer {
   }
 
   /**
-   * Creates a new Launcher with it's sensors.
+   * Initializer
    */
-  public void LauncherInit() {
+  public void init() {
     // MOTORS
     LauncherPC = new WPI_VictorSPX(Constants.Motors.LAUNCHER_PC.getPort());
-  }
-
-  /**
-   * Creates a new Storage with it's sensors.
-   */
-  public void StorageInit() {
     Storage = new WPI_VictorSPX(Constants.Motors.STORAGE.getPort());
     StorageWheel = new WPI_VictorSPX(Constants.Motors.STORAGE_WHEEL.getPort());
   }

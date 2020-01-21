@@ -124,7 +124,9 @@ public final class Constants {
         BUTTON_A(1), 
         BUTTON_B(2), 
         BUTTON_X(3), 
-        BUTTON_Y(4);
+        BUTTON_Y(4),
+        X_AXIS(4),
+        Y_AXIS(5);
 
         private int PortValue;
 
@@ -135,6 +137,7 @@ public final class Constants {
         public int getPort() {
             return PortValue;
         }
+
     }
 
 }
