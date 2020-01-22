@@ -16,19 +16,18 @@ import frc.robot.subsystems.DriveTrain;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class Straigth extends PIDCommand {
+public class Turn extends PIDCommand {
   /**
-   * Creates a new Straigth.
+   * Creates a new Turn.
    */
-  boolean killed = false;
-
-  public Straigth(NavX nv, DriveTrain dt, double setpoint) {
+  private static boolean killed = false;
+  public Turn(DriveTrain dt, double setpoint, NavX navX) {
     super(
         // The controller that the command will use
         new PIDController(Constants.kP, Constants.kI, Constants.kD),
         // This should return the measurement
         () -> {
-          return nv.getAngle();
+          return navX.getAngle();
         },
         // This should return the setpoint (can also be a constant)
         () -> {
@@ -36,18 +35,14 @@ public class Straigth extends PIDCommand {
         },
         // This uses the output
         output -> {
-          if (output == 0) {
-            
-          } else {
+          if(output!=0.0){
             dt.arcadeDrive(0, output);
+          }else{
+            killed = true;
           }
         });
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
-  }
-
-  public void kill() {
-    killed = true;
   }
 
   // Returns true when the command should end.

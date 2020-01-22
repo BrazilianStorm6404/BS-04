@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.libs.CAN;
+package frc.robot.libs.can;
 
 import edu.wpi.first.hal.CANData;
 import edu.wpi.first.wpilibj.CAN;
@@ -22,8 +22,8 @@ public class CANHelper {
     //#endregion
 
     //#region CONSTRUCTOR
-    public CANHelper(int deviceID) {
-        CANSender = new CAN(deviceID);
+    public CANHelper(String deviceID) {
+        CANSender = new CAN(Integer.parseInt(deviceID));
         data = new CANData();
         for(byte CANbyte : CANBytes){
             CANbyte = (byte) 0;
@@ -32,15 +32,15 @@ public class CANHelper {
     //#endregion
 
     //#region WRITE DATA
-    public void writeData(int id, int time) {
-        CANSender.writePacketRepeating(CANBytes, id, time);
+    public void writeData(String id, int time) {
+        CANSender.writePacketRepeating(CANBytes, Integer.parseInt(id), time);
     }
     //#endregion
 
     //#region READ DATA
-    public void readData(int id) {
-        boolean state = CANSender.readPacketLatest(id, this.data); 
-        CANBytes = this.data.data;
+    public byte[] readData(String id) {
+        boolean state = CANSender.readPacketLatest(Integer.parseInt(id), this.data); 
+        return this.data.data;
     } 
     //#endregion
 

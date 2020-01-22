@@ -53,7 +53,7 @@ public final class Constants {
         DRIVE_LEFT_FRONT(0),
         DRIVE_LEFT_BACK(0),
         INTAKE(0), 
-        LAUNCHER_PC(0),  
+        SHOOTER(0),  
         STORAGE(0),
         STORAGE_WHEEL(0),
         HORIZONTAL_TURNER(0),

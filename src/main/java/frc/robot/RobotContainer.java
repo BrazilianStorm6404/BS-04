@@ -17,8 +17,14 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj.SerialPort;
+import frc.robot.libs.can.CANHelper;
+import frc.robot.libs.auto.drive.*;
+import frc.robot.libs.sensors.NavX;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Tracker;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -30,8 +36,8 @@ import frc.robot.subsystems.DriveTrain;
 public class RobotContainer {
 
   //#region INSTANTIATION
-  // SUBSYSTEMS
-  private final DriveTrain m_DriveTrain = new DriveTrain();
+  // CAN
+  private CANHelper CAN = new CANHelper("1F6404FF");
 
   // CONTROLLERS
   private XboxController Controller1,Controller2;
@@ -43,7 +49,19 @@ public class RobotContainer {
   private JoystickButton ButtonA_2,ButtonB_2,ButtonX_2,ButtonY_2;
 
   // MOTORS
-  private WPI_VictorSPX LauncherPC,Storage, intakeMotor, StorageWheel,climbLeft,climbRight,telescopic;
+  private WPI_VictorSPX LauncherPC,Storage,intakeMotor,StorageWheel,climbLeft,climbRight,telescopic;
+
+  //SENSORS
+  private NavX m_navx;
+
+  // SUBSYSTEMS
+  private final DriveTrain m_DriveTrain = new DriveTrain();
+  private final Tracker m_Tracker = new Tracker();
+
+  // COMMANDS
+
+  private Straigth straigth = new Straigth(m_navx, m_DriveTrain, 0.0);
+  
   //#endregion
 
   //#region CONSTRUCTOR
@@ -69,7 +87,7 @@ public class RobotContainer {
     // LAUNCHER
     ButtonA_1.whenPressed(() -> LauncherPC.set(1.0))
     .whenReleased(() -> LauncherPC.set(0.0));
-
+     
     // CLIMB
     ButtonB_1.whenPressed(() -> {
       climbLeft.set(Constants.Motors.getClimbSpeed());
@@ -91,6 +109,11 @@ public class RobotContainer {
     CommandScheduler.getInstance().onCommandExecute(command -> { //can.get().toString();
       Shuffleboard.getTab("Logger").add("Log", "");
       m_DriveTrain.arcadeDrive(Controller1.getX(), Controller1.getY());
+
+      if(CAN.readData("1F6404AA")[0] == (byte) 1) {
+        new Turn(m_DriveTrain, 
+        Shuffleboard.getTab("Vision").add("Angle", 0.0).getEntry().getDouble(0.0) + m_navx.getYaw(), m_navx)
+      }
     });
   }
   //#endregion
@@ -135,6 +158,9 @@ public class RobotContainer {
     LauncherPC = new WPI_VictorSPX(Constants.Motors.LAUNCHER_PC.getPort());
     Storage = new WPI_VictorSPX(Constants.Motors.STORAGE.getPort());
     StorageWheel = new WPI_VictorSPX(Constants.Motors.STORAGE_WHEEL.getPort());
+
+    // SENSORS
+    m_navx = new NavX(SerialPort.Port.kMXP);
   }
   //#endregion
 
@@ -146,7 +172,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return null;
+    return new Command() {
+      m_Tr
+    };
   }
   //#endregion
 }

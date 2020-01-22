@@ -7,22 +7,18 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import edu.wpi.first.wpilibj.SerialPort;
+
 
 public class DriveTrain extends SubsystemBase {
 //#region INSTANTIATION
 private final DifferentialDrive m_drive;
 private volatile double x = 0.0,y = 0.0;
-private final AHRS m_navx;
+
 //#endregion
 
  //#region CONSTRUCTOR
@@ -41,8 +37,6 @@ private final AHRS m_navx;
        new Spark(Constants.Motors.DRIVE_RIGHT_BACK.getPort()),
      new Spark(Constants.Motors.DRIVE_RIGHT_FRONT.getPort()))
    );
-
-   m_navx = new AHRS(SerialPort.Port.kMXP);
  }
  //#endregion
 
