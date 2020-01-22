@@ -19,6 +19,7 @@ package frc.robot;
  */
 public final class Constants {
 
+    //#region SENSORS
     /**
      * Enum for all sensors in the robot.
      */
@@ -40,19 +41,33 @@ public final class Constants {
             return PortValue;
         }
     }
+    //#endregion
 
+    //#region MOTORS
     /**
      * Enum for all motors in the robot.
      */
     public static enum Motors {
+        DRIVE_RIGHT_FRONT(0), 
+        DRIVE_RIGHT_BACK(0),  
+        DRIVE_LEFT_FRONT(0),
+        DRIVE_LEFT_BACK(0),
         INTAKE(0), 
         LAUNCHER_PC(0),  
         STORAGE(0),
         STORAGE_WHEEL(0),
         HORIZONTAL_TURNER(0),
-        VERTICAL_TURNER(0);
+        VERTICAL_TURNER(0),
+        TELESCOPIC(0), 
+        CLIMB_LEFT(0),  
+        CLIMB_RIGHT(0);
 
         private int PortValue;
+
+        private static double climb_speed = 1;
+        private static double telescopic_speed = 1;
+        private static double shooting_speed = 0.7;
+        private static double intake_speed = 1;
 
         Motors(int PortValue) {
             this.PortValue = PortValue;
@@ -61,51 +76,7 @@ public final class Constants {
         public int getPort() {
             return PortValue;
         }
-
-        private static double shooting_speed = 0.7;
-
-        public static double getShootingSpeed() {
-            return shooting_speed;
-        }
-
-    }
-
-    public static enum Drive {
-        RIGHT_FRONT(0), 
-        RIGHT_BACK(0),  
-        LEFT_FRONT(0),
-        LEFT_BACK(0);
-
-        private int PortValue;
-
-        Drive(int PortValue) {
-            this.PortValue = PortValue;
-        }
-
-        public int getPort() {
-            return PortValue;
-        }
-    }
-
-    public static enum Climb {
-        TELESCOPIC(0), 
-        CLIMB_LEFT(0),  
-        CLIMB_RIGHT(0);
-
-
-        private int PortValue;
-
-        Climb(int PortValue) {
-            this.PortValue = PortValue;
-        }
-
-        public int getPort() {
-            return PortValue;
-        }
-
-        private static double climb_speed = 1;
-        private static double telescopic_speed = 1;
-
+        
         public static double getClimbSpeed() {
             return climb_speed;
         }
@@ -113,8 +84,19 @@ public final class Constants {
         public static double getTelescopicSpeed() {
             return telescopic_speed;
         }
-    }
 
+        public static double getShootingSpeed() {
+            return shooting_speed;
+        }
+
+        public static double getIntakeSpeed() {
+            return intake_speed;
+        }
+
+    }
+    //#endregion
+
+    //#region OI
     /**
      * Enum for the OI, including buttons and controllers.
      */
@@ -139,5 +121,14 @@ public final class Constants {
         }
 
     }
+    //#endregion
+    
+    //#region AUTONOMOUS
+        //PID
+        public static double kP = 0, kI = 0, kD = 0;
+
+        // DISTANCE TO SHOT
+        public static double minDistToShot = 0,maxDistToShot = 0;
+    //#endregion
 
 }

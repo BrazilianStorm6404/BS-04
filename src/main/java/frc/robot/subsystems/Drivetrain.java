@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Spark;
@@ -15,51 +16,46 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants;
-import frc.robot.libs.sensors.NavX;
 import edu.wpi.first.wpilibj.SerialPort;
 
-public class Drivetrain extends PIDSubsystem {
-  /**
-   * Creates a new Drivetrain.
-   */
-  Spark LeftFront, LeftBack, RightFront, RightBack;
+public class DriveTrain extends SubsystemBase {
+//#region INSTANTIATION
+private final DifferentialDrive m_drive;
+private volatile double x = 0.0,y = 0.0;
+private final AHRS m_navx;
+//#endregion
 
-  private final SpeedControllerGroup m_leftMotors, m_rightMotors; 
-  private final DifferentialDrive m_drive;
+ //#region CONSTRUCTOR
+ /**
+  * Creates a new Drivetrain.
+  */
+ public DriveTrain() {
 
-  private final AHRS m_navx;
+   m_drive = new DifferentialDrive(
+     // LEFT SPEED CONTROLLER
+     new SpeedControllerGroup(
+       new Spark(Constants.Motors.DRIVE_LEFT_FRONT.getPort()), 
+       new Spark(Constants.Motors.DRIVE_LEFT_BACK.getPort())),
+     // RIGHT SPEED CONTROLLER
+     new SpeedControllerGroup(
+       new Spark(Constants.Motors.DRIVE_RIGHT_BACK.getPort()),
+     new Spark(Constants.Motors.DRIVE_RIGHT_FRONT.getPort()))
+   );
 
-  public Drivetrain() {
-    super(
-        // The PIDController used by the subsystem
-        new PIDController(0, 0, 0));
-      
-      LeftFront = new Spark(Constants.Drive.LEFT_FRONT.getPort());
-      LeftBack = new Spark(Constants.Drive.LEFT_BACK.getPort());
-      RightFront = new Spark(Constants.Drive.RIGHT_FRONT.getPort());
-      RightBack = new Spark(Constants.Drive.RIGHT_BACK.getPort());
+   m_navx = new AHRS(SerialPort.Port.kMXP);
+ }
+ //#endregion
 
-      m_leftMotors = new SpeedControllerGroup(LeftFront, LeftBack);
-      m_rightMotors = new SpeedControllerGroup(RightFront, RightBack);
-
-      m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
-
-      m_navx = new AHRS(SerialPort.Port.kMXP);
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    this.arcadeDrive(x, y);
   }
 
+  //#region ARCADE DRIVE
   public void arcadeDrive(double fwd, double rot) {
-    m_drive.arcadeDrive(fwd, rot);
+    x = fwd;
+    y = rot;
   }
-
-  @Override
-  public void useOutput(double output, double setpoint) {
-    // Use the output here
-    m_drive.arcadeDrive(0, output);
-  }
-
-  @Override
-  public double getMeasurement() {
-    // Return the process variable measurement here
-    return m_navx.getYaw();
-  }
+  //#endregion
 }

@@ -14,28 +14,33 @@ import frc.robot.Constants;
 
 public class Tracker extends SubsystemBase {
 
+  //#region INSTANTIATION
   // MOTORS
-  WPI_VictorSPX HorizontalTurner;
   WPI_VictorSPX VerticalTurner;
   WPI_VictorSPX Shooter;
+  //
+  //#endregion
 
+  //#region CONSTRUCTOR
   /**
    * Creates a new Tracker.
    */
   public Tracker() {
-    // LIMITS SWITCHES
 
     // MOTORS
     VerticalTurner = new WPI_VictorSPX(Constants.Motors.VERTICAL_TURNER.getPort());
-    HorizontalTurner = new WPI_VictorSPX(Constants.Motors.HORIZONTAL_TURNER.getPort());
     Shooter = new WPI_VictorSPX(Constants.Motors.LAUNCHER_PC.getPort());
   }
+  //#endregion
 
+  //#region PERIODIC
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
+  //#endregion
 
+  //#region TURN VERTICAL
   /**
    * Command for turning the launcher vertically.
    * @param direction if true turns to the right, if false turns to the left.
@@ -43,16 +48,11 @@ public class Tracker extends SubsystemBase {
   public void turnVertical(boolean direction) {
     VerticalTurner.set(direction ? 0.7 : -0.7);
   } 
+  //#endregion
 
-  /**
-   * Command for turning the launcher horizontally.
-   * @param direction if true turns up, if false turns down.
-   */
-  public void turnHorizontal(boolean direction) {
-    HorizontalTurner.set(direction ? 0.7 : -0.7);
-  }
-
+  //#region SHOOT
   public void shoot() {
     Shooter.set(Constants.Motors.getShootingSpeed());
   } 
+  //#endregion
 }

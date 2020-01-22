@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.DriveTrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -28,30 +28,25 @@ import frc.robot.subsystems.Drivetrain;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
+  //#region INSTANTIATION
   // SUBSYSTEMS
-  private final Drivetrain mDrivetrain = new Drivetrain();
+  private final DriveTrain m_DriveTrain = new DriveTrain();
 
   // CONTROLLERS
-  private XboxController Controller1;
-  private XboxController Controller2;
+  private XboxController Controller1,Controller2;
 
   // BUTTONS CONTROLLER 1
-  private JoystickButton ButtonA_1;
-  private JoystickButton ButtonB_1;
-  private JoystickButton ButtonX_1;
-  private JoystickButton ButtonY_1;
+  private JoystickButton ButtonA_1, ButtonB_1,ButtonX_1,ButtonY_1;
 
   // BUTTONS CONTROLLER 2
-  private JoystickButton ButtonA_2;
-  private JoystickButton ButtonB_2;
-  private JoystickButton ButtonX_2;
-  private JoystickButton ButtonY_2;
+  private JoystickButton ButtonA_2,ButtonB_2,ButtonX_2,ButtonY_2;
 
   // MOTORS
-  WPI_VictorSPX LauncherPC;
-  WPI_VictorSPX Storage;
-  WPI_VictorSPX StorageWheel;
+  private WPI_VictorSPX LauncherPC,Storage, intakeMotor, StorageWheel,climbLeft,climbRight,telescopic;
+  //#endregion
 
+  //#region CONSTRUCTOR
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -61,7 +56,9 @@ public class RobotContainer {
     configureButtonBindings();
     init();
   }
+  //#endregion
 
+  //#region BUTTON BINDINGS
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by instantiating a {@link GenericHID} or one of its subclasses
@@ -69,18 +66,36 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    // LAUNCHER
     ButtonA_1.whenPressed(() -> LauncherPC.set(1.0))
     .whenReleased(() -> LauncherPC.set(0.0));
 
+    // CLIMB
+    ButtonB_1.whenPressed(() -> {
+      climbLeft.set(Constants.Motors.getClimbSpeed());
+      climbRight.set(Constants.Motors.getClimbSpeed());
+    }).whenReleased(() -> {
+      climbLeft.set(0.0);
+      climbRight.set(0.0);
+    });
+
+    // TELECOSPIC
+    ButtonX_1.whenPressed(() -> telescopic.set(Constants.Motors.getTelescopicSpeed())
+    ).whenReleased(() -> telescopic.set(0.0));
     
-    
-    //Logger
+    // INTAKE
+    ButtonY_1.whenPressed(() -> intakeMotor.set(Constants.Motors.getIntakeSpeed()))
+    .whenReleased(() -> intakeMotor.set(0.0));
+
+    // EXECUTE EVERY PULSE
     CommandScheduler.getInstance().onCommandExecute(command -> { //can.get().toString();
       Shuffleboard.getTab("Logger").add("Log", "");
-      mDrivetrain.arcadeDrive(Controller1.getX(), Controller1.getY());
+      m_DriveTrain.arcadeDrive(Controller1.getX(), Controller1.getY());
     });
   }
+  //#endregion
 
+  //#region SET CONTROLLERS 
   /**
    * Constructor for the OI
    * 
@@ -105,17 +120,25 @@ public class RobotContainer {
       ButtonY_2 = new JoystickButton(Controller2, Constants.OI_Map.BUTTON_Y.getPort());
     }
   }
+  //#endregion
 
+  //#region INITIALIZER
   /**
-   * Initializer
+   * Initializer of almost every item in the robot.
    */
   public void init() {
     // MOTORS
+    climbLeft = new WPI_VictorSPX(Constants.Motors.CLIMB_LEFT.getPort());
+    climbRight = new WPI_VictorSPX(Constants.Motors.CLIMB_RIGHT.getPort());
+    telescopic = new WPI_VictorSPX(Constants.Motors.TELESCOPIC.getPort());
+    intakeMotor = new WPI_VictorSPX(Constants.Motors.INTAKE.getPort());
     LauncherPC = new WPI_VictorSPX(Constants.Motors.LAUNCHER_PC.getPort());
     Storage = new WPI_VictorSPX(Constants.Motors.STORAGE.getPort());
     StorageWheel = new WPI_VictorSPX(Constants.Motors.STORAGE_WHEEL.getPort());
   }
+  //#endregion
 
+  //#region AUTONOMOUS
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -125,4 +148,5 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
     return null;
   }
+  //#endregion
 }

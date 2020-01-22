@@ -10,10 +10,12 @@ package frc.robot.commands;
 import javax.annotation.Nonnull;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Tracker;
 
 public class TurnLauncher extends CommandBase {
 
+  //#region INSTANTIATION
   // VARIABLES
   private boolean verticalTurn;
   private double degrees;
@@ -21,7 +23,10 @@ public class TurnLauncher extends CommandBase {
 
   // SUBSYSTEM
   private Tracker m_Tracker;
+  private DriveTrain m_DriveTrain;
+  //#endregion 
 
+  //#region CONSTRUCTOR
   /**
    * Creates a new TurnLauncher.
    * 
@@ -29,19 +34,25 @@ public class TurnLauncher extends CommandBase {
    * @param degrees      the degree of the turn, negative degrees works equal to
    *                     the cartesian plane.
    */
-  public TurnLauncher(@Nonnull Tracker Tracker, @Nonnull boolean verticalTurn,@Nonnull double degrees) {
+  public TurnLauncher(@Nonnull Tracker Tracker, @Nonnull boolean verticalTurn,
+  @Nonnull double degrees, @Nonnull DriveTrain DriveTrain) {
+    m_DriveTrain = DriveTrain;
     m_Tracker = Tracker;
     this.verticalTurn = verticalTurn;
     this.degrees = degrees;
     addRequirements(m_Tracker);
-
+    addRequirements(m_DriveTrain);
   }
+  //#endregion
 
+  //#region INITIALIZE
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
   }
+  //#endregion
 
+  //#region EXECUTE
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -51,30 +62,37 @@ public class TurnLauncher extends CommandBase {
       if(verticalTurn) {
         m_Tracker.turnVertical(false);
       } else {
-        m_Tracker.turnHorizontal(false);
+        //m_Tracker.turnHorizontal(false);
       }
     } else {
       if(verticalTurn) {
         m_Tracker.turnVertical(true);
       } else {
-        m_Tracker.turnHorizontal(true);
+        //m_Tracker.turnHorizontal(true);
       }
     
     }
   }
+  //#endregion
 
+  //#region PROPORTIONAL
   private boolean proportional(double error) {
     return ((degrees_original /*- now*/) / 100 < error);
   }
+  //#endregion
 
+  //#region END
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
   }
+  //#endregion
 
+  //#region IS FINISHED
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return proportional(0.1);
   }
+  //#endregion
 }
