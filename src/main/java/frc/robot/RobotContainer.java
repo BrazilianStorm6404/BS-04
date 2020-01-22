@@ -112,7 +112,7 @@ public class RobotContainer {
 
       if(CAN.readData("1F6404AA")[0] == (byte) 1) {
         new Turn(m_DriveTrain, 
-        Shuffleboard.getTab("Vision").add("Angle", 0.0).getEntry().getDouble(0.0) + m_navx.getYaw(), m_navx)
+        Shuffleboard.getTab("Vision").add("Angle", 0.0).getEntry().getDouble(0.0) + m_navx.getYaw(), m_navx);
       }
     });
   }
@@ -155,7 +155,7 @@ public class RobotContainer {
     climbRight = new WPI_VictorSPX(Constants.Motors.CLIMB_RIGHT.getPort());
     telescopic = new WPI_VictorSPX(Constants.Motors.TELESCOPIC.getPort());
     intakeMotor = new WPI_VictorSPX(Constants.Motors.INTAKE.getPort());
-    LauncherPC = new WPI_VictorSPX(Constants.Motors.LAUNCHER_PC.getPort());
+    LauncherPC = new WPI_VictorSPX(Constants.Motors.SHOOTER.getPort());
     Storage = new WPI_VictorSPX(Constants.Motors.STORAGE.getPort());
     StorageWheel = new WPI_VictorSPX(Constants.Motors.STORAGE_WHEEL.getPort());
 
@@ -172,8 +172,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new Command() {
-      m_Tr
+    return () -> {
+      m_Tracker.shoot();
+      return null;
     };
   }
   //#endregion
