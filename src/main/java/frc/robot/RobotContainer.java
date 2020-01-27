@@ -151,13 +151,13 @@ public class RobotContainer {
    */
   public void init() {
     // MOTORS
-    climbLeft = new WPI_VictorSPX(Constants.Motors.CLIMB_LEFT.getPort());
-    climbRight = new WPI_VictorSPX(Constants.Motors.CLIMB_RIGHT.getPort());
-    telescopic = new WPI_VictorSPX(Constants.Motors.TELESCOPIC.getPort());
-    intakeMotor = new WPI_VictorSPX(Constants.Motors.INTAKE.getPort());
-    LauncherPC = new WPI_VictorSPX(Constants.Motors.SHOOTER.getPort());
-    Storage = new WPI_VictorSPX(Constants.Motors.STORAGE.getPort());
-    StorageWheel = new WPI_VictorSPX(Constants.Motors.STORAGE_WHEEL.getPort());
+    climbLeft = new WPI_VictorSPX(Constants.Motors.CLIMB_LEFT.getPortCAN());
+    climbRight = new WPI_VictorSPX(Constants.Motors.CLIMB_RIGHT.getPortCAN());
+    telescopic = new WPI_VictorSPX(Constants.Motors.TELESCOPIC.getPortCAN());
+    intakeMotor = new WPI_VictorSPX(Constants.Motors.INTAKE.getPortCAN());
+    LauncherPC = new WPI_VictorSPX(Constants.Motors.SHOOTER.getPortCAN());
+    Storage = new WPI_VictorSPX(Constants.Motors.STORAGE.getPortCAN());
+    StorageWheel = new WPI_VictorSPX(Constants.Motors.STORAGE_WHEEL.getPortCAN());
 
     // SENSORS
     m_navx = new NavX(SerialPort.Port.kMXP);

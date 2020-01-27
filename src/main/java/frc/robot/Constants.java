@@ -48,33 +48,39 @@ public final class Constants {
      * Enum for all motors in the robot.
      */
     public static enum Motors {
-        DRIVE_RIGHT_FRONT(0), 
-        DRIVE_RIGHT_BACK(0),  
-        DRIVE_LEFT_FRONT(0),
-        DRIVE_LEFT_BACK(0),
-        INTAKE(0), 
-        SHOOTER(0),  
-        STORAGE(0),
-        STORAGE_WHEEL(0),
-        HORIZONTAL_TURNER(0),
-        VERTICAL_TURNER(0),
-        TELESCOPIC(0), 
-        CLIMB_LEFT(0),  
-        CLIMB_RIGHT(0);
+        DRIVE_RIGHT_FRONT(0,0), 
+        DRIVE_RIGHT_BACK(0,0),  
+        DRIVE_LEFT_FRONT(0,0),
+        DRIVE_LEFT_BACK(0,0),
+        INTAKE(0,0), 
+        SHOOTER(0,0),  
+        STORAGE(0,0),
+        STORAGE_WHEEL(0,0),
+        HORIZONTAL_TURNER(0,0),
+        VERTICAL_TURNER(0,0),
+        TELESCOPIC(0,0), 
+        CLIMB_LEFT(0,0),  
+        CLIMB_RIGHT(0,0);
 
-        private int PortValue;
+        private int PortValuePWM;
+        private int PortValueCAN;
 
         private static double climb_speed = 1;
         private static double telescopic_speed = 1;
         private static double shooting_speed = 0.7;
         private static double intake_speed = 1;
 
-        Motors(int PortValue) {
-            this.PortValue = PortValue;
+        Motors(int PortValuePWM,int PortValueCAN) {
+            this.PortValuePWM = PortValuePWM;
+            this.PortValueCAN = PortValueCAN;
         }
 
-        public int getPort() {
-            return PortValue;
+        public int getPortCAN() {
+            return PortValueCAN;
+        }
+
+        public int getPortPWM() {
+            return PortValuePWM;
         }
         
         public static double getClimbSpeed() {

@@ -28,8 +28,8 @@ public class Tracker extends SubsystemBase {
   public Tracker() {
 
     // MOTORS
-    VerticalTurner = new WPI_VictorSPX(Constants.Motors.VERTICAL_TURNER.getPort());
-    Shooter = new WPI_VictorSPX(Constants.Motors.SHOOTER.getPort());
+    VerticalTurner = new WPI_VictorSPX(Constants.Motors.VERTICAL_TURNER.getPortCAN());
+    Shooter = new WPI_VictorSPX(Constants.Motors.SHOOTER.getPortCAN());
   }
   //#endregion
 

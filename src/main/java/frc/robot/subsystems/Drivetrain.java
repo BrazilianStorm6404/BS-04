@@ -30,12 +30,12 @@ private volatile double x = 0.0,y = 0.0;
    m_drive = new DifferentialDrive(
      // LEFT SPEED CONTROLLER
      new SpeedControllerGroup(
-       new Spark(Constants.Motors.DRIVE_LEFT_FRONT.getPort()), 
-       new Spark(Constants.Motors.DRIVE_LEFT_BACK.getPort())),
+       new Spark(Constants.Motors.DRIVE_LEFT_FRONT.getPortCAN()), 
+       new Spark(Constants.Motors.DRIVE_LEFT_BACK.getPortCAN())),
      // RIGHT SPEED CONTROLLER
      new SpeedControllerGroup(
-       new Spark(Constants.Motors.DRIVE_RIGHT_BACK.getPort()),
-     new Spark(Constants.Motors.DRIVE_RIGHT_FRONT.getPort()))
+       new Spark(Constants.Motors.DRIVE_RIGHT_BACK.getPortCAN()),
+     new Spark(Constants.Motors.DRIVE_RIGHT_FRONT.getPortCAN()))
    );
  }
  //#endregion

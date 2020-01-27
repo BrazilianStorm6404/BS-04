@@ -13,39 +13,32 @@ import frc.robot.Constants;
 import frc.robot.libs.sensors.NavX;
 import frc.robot.subsystems.DriveTrain;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
 public class Straigth extends PIDCommand {
   /**
    * Creates a new Straigth.
    */
   boolean killed = false;
-
-  public Straigth(NavX nv, DriveTrain dt, double setpoint) {
+  /**
+   * Create a new Command to drive straight using a NavX sensor
+   */
+  public Straigth(NavX navX, DriveTrain drivetrain, double setpoint) {
     super(
-        // The controller that the command will use
         new PIDController(Constants.kP, Constants.kI, Constants.kD),
-        // This should return the measurement
         () -> {
-          return nv.getAngle();
+          return navX.getAngle();
         },
-        // This should return the setpoint (can also be a constant)
         () -> {
           return setpoint;
         },
-        // This uses the output
         output -> {
-          if (output == 0) {
-            
-          } else {
-            dt.arcadeDrive(0, output);
+          if (output != 0) {
+            drivetrain.arcadeDrive(0, output);
           }
         });
-    // Use addRequirements() here to declare subsystem dependencies.
-    // Configure additional PID options by calling `getController` here.
   }
-
+  /**
+   * Use to stop the PIDController
+   */
   public void kill() {
     killed = true;
   }
