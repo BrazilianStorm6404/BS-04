@@ -25,11 +25,11 @@ public final class Constants {
      */
     public static enum Sensors {
         _HORIZONTAL(0),
-        _VERTICAL(0),
-        OS_STORAGE_1(0),
-        OS_STORAGE_2(0),
-        OS_STORAGE_3(0),
-        ENC_STORAGE_WHEEL(0);
+        _VERTICAL(1),
+        OS_STORAGE_1(2),
+        OS_STORAGE_2(3),
+        OS_STORAGE_3(4),
+        ENC_STORAGE_WHEEL(5);
 
         private int PortValue;
 
@@ -48,19 +48,19 @@ public final class Constants {
      * Enum for all motors in the robot.
      */
     public static enum Motors {
-        DRIVE_RIGHT_FRONT(0,0), 
+        DRIVE_RIGHT_FRONT(1,1), 
         DRIVE_RIGHT_BACK(0,0),  
-        DRIVE_LEFT_FRONT(0,0),
-        DRIVE_LEFT_BACK(0,0),
-        INTAKE(0,0), 
-        SHOOTER(0,0),  
-        STORAGE(0,0),
-        STORAGE_WHEEL(0,0),
-        HORIZONTAL_TURNER(0,0),
-        VERTICAL_TURNER(0,0),
-        TELESCOPIC(0,0), 
-        CLIMB_LEFT(0,0),  
-        CLIMB_RIGHT(0,0);
+        DRIVE_LEFT_FRONT(3,3),
+        DRIVE_LEFT_BACK(2,2),
+        INTAKE(4,4), 
+        SHOOTER(5,5),  
+        STORAGE(6,6),
+        STORAGE_WHEEL(7,7),
+        HORIZONTAL_TURNER(8,8),
+        VERTICAL_TURNER(9,9),
+        TELESCOPIC(10,10), 
+        CLIMB_LEFT(11,11),  
+        CLIMB_RIGHT(12,12);
 
         private int PortValuePWM;
         private int PortValueCAN;

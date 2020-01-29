@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -23,8 +24,10 @@ import edu.wpi.first.wpilibj.SerialPort;
 import frc.robot.libs.can.CANHelper;
 import frc.robot.libs.auto.drive.*;
 import frc.robot.libs.sensors.NavX;
+import frc.robot.libs.sensors.Pixy;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Tracker;
+import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -37,13 +40,13 @@ public class RobotContainer {
 
   //#region INSTANTIATION
   // CAN
-  private CANHelper CAN = new CANHelper("1F6404FF");
+  private CANHelper CAN = new CANHelper("1");
 
   // CONTROLLERS
   private XboxController Controller1,Controller2;
 
   // BUTTONS CONTROLLER 1
-  private JoystickButton ButtonA_1, ButtonB_1,ButtonX_1,ButtonY_1;
+  public JoystickButton ButtonA_1, ButtonB_1,ButtonX_1,ButtonY_1;
 
   // BUTTONS CONTROLLER 2
   private JoystickButton ButtonA_2,ButtonB_2,ButtonX_2,ButtonY_2;
@@ -53,6 +56,7 @@ public class RobotContainer {
 
   //SENSORS
   private NavX m_navx;
+  public static Pixy m_pixy;
 
   // SUBSYSTEMS
   private final DriveTrain m_DriveTrain = new DriveTrain();
@@ -62,6 +66,9 @@ public class RobotContainer {
 
   private Straigth straigth = new Straigth(m_navx, m_DriveTrain, 0.0);
   
+  // SHUFFLEBOARD
+  public NetworkTableEntry pixyEntry;
+
   //#endregion
 
   //#region CONSTRUCTOR
@@ -69,10 +76,10 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    init();
     // Configure the button bindings
     setControllers(1);
     configureButtonBindings();
-    init();
   }
   //#endregion
 
@@ -102,13 +109,21 @@ public class RobotContainer {
     ).whenReleased(() -> telescopic.set(0.0));
     
     // INTAKE
+    // ButtonY_1.whenPressed(() -> intakeMotor.set(Constants.Motors.getIntakeSpeed()))
+    // .whenReleased(() -> intakeMotor.set(0.0));
+
     ButtonY_1.whenPressed(() -> intakeMotor.set(Constants.Motors.getIntakeSpeed()))
     .whenReleased(() -> intakeMotor.set(0.0));
 
     // EXECUTE EVERY PULSE
     CommandScheduler.getInstance().onCommandExecute(command -> { //can.get().toString();
       Shuffleboard.getTab("Logger").add("Log", "");
+      Block bloco = m_pixy.getBiggestBlock();      
       m_DriveTrain.arcadeDrive(Controller1.getX(), Controller1.getY());
+      
+      if (bloco != null) {
+        new Turn(m_DriveTrain, bloco.getAngle(), m_navx);
+      }
 
       if(CAN.readData("1F6404AA")[0] == (byte) 1) {
         new Turn(m_DriveTrain, 
@@ -161,6 +176,12 @@ public class RobotContainer {
 
     // SENSORS
     m_navx = new NavX(SerialPort.Port.kMXP);
+    m_pixy = new Pixy();
+    m_pixy.initialize();
+
+    
+    pixyEntry = Shuffleboard.getTab("Pixy").add("Sig 1", 0.0).getEntry();
+
   }
   //#endregion
 
