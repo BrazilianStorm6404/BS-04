@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import java.util.Set;
+
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
@@ -16,8 +18,10 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.SerialPort;
 import frc.robot.libs.can.CANHelper;
@@ -35,23 +39,23 @@ import frc.robot.subsystems.Tracker;
  */
 public class RobotContainer {
 
-  //#region INSTANTIATION
+  // #region INSTANTIATION
   // CAN
   private CANHelper CAN = new CANHelper("1F6404FF");
 
   // CONTROLLERS
-  private XboxController Controller1,Controller2;
+  private XboxController Controller1, Controller2;
 
   // BUTTONS CONTROLLER 1
-  private JoystickButton ButtonA_1, ButtonB_1,ButtonX_1,ButtonY_1;
+  private JoystickButton ButtonA_1, ButtonB_1, ButtonX_1, ButtonY_1;
 
   // BUTTONS CONTROLLER 2
-  private JoystickButton ButtonA_2,ButtonB_2,ButtonX_2,ButtonY_2;
+  private JoystickButton ButtonA_2, ButtonB_2, ButtonX_2, ButtonY_2;
 
   // MOTORS
-  private WPI_VictorSPX LauncherPC,Storage,intakeMotor,StorageWheel,climbLeft,climbRight,telescopic;
+  private WPI_VictorSPX LauncherPC, Storage, intakeMotor, StorageWheel, climbLeft, climbRight, telescopic;
 
-  //SENSORS
+  // SENSORS
   private NavX m_navx;
 
   // SUBSYSTEMS
@@ -61,10 +65,10 @@ public class RobotContainer {
   // COMMANDS
 
   private Straigth straigth = new Straigth(m_navx, m_DriveTrain, 0.0);
-  
-  //#endregion
 
-  //#region CONSTRUCTOR
+  // #endregion
+
+  // #region CONSTRUCTOR
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -73,10 +77,20 @@ public class RobotContainer {
     setControllers(1);
     configureButtonBindings();
     init();
-  }
-  //#endregion
 
-  //#region BUTTON BINDINGS
+    // EXECUTE EVERY PULSE
+    m_DriveTrain.setDefaultCommand(new RunCommand(() -> {
+      // Shuffleboard.getTab("Logger").add("Logging", "a").getEntry();
+      m_DriveTrain.arcadeDrive(Controller1.getY(GenericHID.Hand.kLeft), Controller1.getX(GenericHID.Hand.kRight));
+      if (CAN.readData("1F6404AA")[0] == (byte) 1) {
+        new Turn(m_DriveTrain,
+            Shuffleboard.getTab("Vision").add("Angle", 0.0).getEntry().getDouble(0.0) + m_navx.getYaw(), m_navx);
+      }
+    }, m_DriveTrain));
+  }
+  // #endregion
+
+  // #region BUTTON BINDINGS
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by instantiating a {@link GenericHID} or one of its subclasses
@@ -85,9 +99,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // LAUNCHER
-    ButtonA_1.whenPressed(() -> LauncherPC.set(1.0))
-    .whenReleased(() -> LauncherPC.set(0.0));
-     
+    ButtonA_1.whenPressed(() -> LauncherPC.set(1.0)).whenReleased(() -> LauncherPC.set(0.0));
+
     // CLIMB
     ButtonB_1.whenPressed(() -> {
       climbLeft.set(Constants.Motors.getClimbSpeed());
@@ -98,23 +111,12 @@ public class RobotContainer {
     });
 
     // TELECOSPIC
-    ButtonX_1.whenPressed(() -> telescopic.set(Constants.Motors.getTelescopicSpeed())
-    ).whenReleased(() -> telescopic.set(0.0));
-    
+    ButtonX_1.whenPressed(() -> telescopic.set(Constants.Motors.getTelescopicSpeed()))
+        .whenReleased(() -> telescopic.set(0.0));
+
     // INTAKE
     ButtonY_1.whenPressed(() -> intakeMotor.set(Constants.Motors.getIntakeSpeed()))
-    .whenReleased(() -> intakeMotor.set(0.0));
-
-    // EXECUTE EVERY PULSE
-    CommandScheduler.getInstance().onCommandExecute(command -> { //can.get().toString();
-      Shuffleboard.getTab("Logger").add("Log", "");
-      m_DriveTrain.arcadeDrive(Controller1.getX(), Controller1.getY());
-
-      if(CAN.readData("1F6404AA")[0] == (byte) 1) {
-        new Turn(m_DriveTrain, 
-        Shuffleboard.getTab("Vision").add("Angle", 0.0).getEntry().getDouble(0.0) + m_navx.getYaw(), m_navx);
-      }
-    });
+        .whenReleased(() -> intakeMotor.set(0.0));
   }
   //#endregion
 

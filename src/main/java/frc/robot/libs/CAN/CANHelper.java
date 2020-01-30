@@ -23,7 +23,7 @@ public class CANHelper {
 
     //#region CONSTRUCTOR
     public CANHelper(String deviceID) {
-        CANSender = new CAN(Integer.parseInt(deviceID));
+        CANSender = new CAN(Integer.parseInt(deviceID, 16));
         data = new CANData();
         for(byte CANbyte : CANBytes){
             CANbyte = (byte) 0;
@@ -33,13 +33,13 @@ public class CANHelper {
 
     //#region WRITE DATA
     public void writeData(String id, int time) {
-        CANSender.writePacketRepeating(CANBytes, Integer.parseInt(id), time);
+        CANSender.writePacketRepeating(CANBytes, Integer.parseInt(id, 16), time);
     }
     //#endregion
 
     //#region READ DATA
     public byte[] readData(String id) {
-        boolean state = CANSender.readPacketLatest(Integer.parseInt(id), this.data); 
+        boolean state = CANSender.readPacketLatest(Integer.parseInt(id, 16), this.data); 
         return this.data.data;
     } 
     //#endregion

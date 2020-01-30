@@ -48,10 +48,10 @@ public final class Constants {
      * Enum for all motors in the robot.
      */
     public static enum Motors {
-        DRIVE_RIGHT_FRONT(0,0), 
+        DRIVE_RIGHT_FRONT(1,0), 
         DRIVE_RIGHT_BACK(0,0),  
-        DRIVE_LEFT_FRONT(0,0),
-        DRIVE_LEFT_BACK(0,0),
+        DRIVE_LEFT_FRONT(2,0),
+        DRIVE_LEFT_BACK(3,0),
         INTAKE(0,0), 
         SHOOTER(0,0),  
         STORAGE(0,0),

@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.logger;
+package frc.robot.libs.logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
