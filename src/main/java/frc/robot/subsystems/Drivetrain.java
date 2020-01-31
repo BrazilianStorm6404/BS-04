@@ -17,27 +17,26 @@ import frc.robot.Constants;
 public class DriveTrain extends SubsystemBase {
 //#region INSTANTIATION
 private final DifferentialDrive m_drive;
-private volatile double x = 0.0,y = 0.0;
 
 //#endregion
 
- //#region CONSTRUCTOR
- /**
+  //#region CONSTRUCTOR
+  /**
   * Creates a new Drivetrain.
   */
- public DriveTrain() {
+  public DriveTrain() {
 
-   m_drive = new DifferentialDrive(
-     // LEFT SPEED CONTROLLER
-     new SpeedControllerGroup(
-       new Spark(Constants.Motors.DRIVE_LEFT_FRONT.getPortPWM()), 
-       new Spark(Constants.Motors.DRIVE_LEFT_BACK.getPortPWM())),
-     // RIGHT SPEED CONTROLLER
-     new SpeedControllerGroup(
-       new Spark(Constants.Motors.DRIVE_RIGHT_BACK.getPortPWM()),
-     new Spark(Constants.Motors.DRIVE_RIGHT_FRONT.getPortPWM()))
-   );
- }
+    m_drive = new DifferentialDrive(
+      // LEFT SPEED CONTROLLER
+      new SpeedControllerGroup(
+        new Spark(Constants.Motors.DRIVE_LEFT_FRONT.getPortPWM()), 
+        new Spark(Constants.Motors.DRIVE_LEFT_BACK.getPortPWM())),
+      // RIGHT SPEED CONTROLLER
+      new SpeedControllerGroup(
+        new Spark(Constants.Motors.DRIVE_RIGHT_BACK.getPortPWM()),
+      new Spark(Constants.Motors.DRIVE_RIGHT_FRONT.getPortPWM()))
+    );
+  }
  //#endregion
 
   @Override

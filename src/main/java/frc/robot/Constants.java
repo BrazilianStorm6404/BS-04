@@ -29,7 +29,10 @@ public final class Constants {
         OS_STORAGE_1(0),
         OS_STORAGE_2(0),
         OS_STORAGE_3(0),
-        ENC_STORAGE_WHEEL(0);
+        ENC_T1_WHEEL_A(1),
+        ENC_T1_WHEEL_B(2),
+        ENC_T2_WHEEL_A(0),
+        ENC_T2_WHEEL_b(0);
 
         private int PortValue;
 
@@ -131,7 +134,7 @@ public final class Constants {
     
     //#region AUTONOMOUS
         //PID
-        public static double kP = 0, kI = 0, kD = 0;
+        public static double kP = 0.2, kI = 0.1, kD = 0.2;
 
         // DISTANCE TO SHOT
         public static double minDistToShot = 0,maxDistToShot = 0;

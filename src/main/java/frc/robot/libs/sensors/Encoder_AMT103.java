@@ -12,7 +12,7 @@ public class Encoder_AMT103 extends Encoder{
      * @param sense direction of the encoder, defalt is true, reverse is false. 
      * @param dpp Define the distance per pulse measured by the encoder
      */
-    public Encoder_AMT103(DigitalSource A,DigitalSource B, boolean sense, double dpp){
+    public Encoder_AMT103(int A,int B, boolean sense, double dpp){
         super(A,B,sense,EncodingType.k4X);
     }
     /**
@@ -23,7 +23,7 @@ public class Encoder_AMT103 extends Encoder{
      * @param B The second channel.
      * @param sense direction of the encoder, defalt is true, reverse is false. 
      */
-    public Encoder_AMT103(DigitalSource A,DigitalSource B, boolean sense){
+    public Encoder_AMT103(int A,int B, boolean sense){
         super(A,B,sense,EncodingType.k4X);
     }
 }

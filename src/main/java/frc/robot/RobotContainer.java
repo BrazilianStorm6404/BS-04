@@ -7,28 +7,36 @@
 
 package frc.robot;
 
-import java.util.Set;
+import java.util.Random;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj.SerialPort;
+import frc.robot.libs.auto.drive.Straigth;
 import frc.robot.libs.can.CANHelper;
-import frc.robot.libs.auto.drive.*;
+import frc.robot.libs.sensors.Encoder_AMT103;
 import frc.robot.libs.sensors.NavX;
+import frc.robot.libs.sensors.Pixy;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Tracker;
+import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -39,12 +47,17 @@ import frc.robot.subsystems.Tracker;
  */
 public class RobotContainer {
 
-  // #region INSTANTIATION
+  //#region INSTANTIATION
+  // SHUFFLEBOARD
+  private ShuffleboardTab tabEnc = Shuffleboard.getTab("ENC"); 
+  private NetworkTableEntry distanceEntry, rateEntry;
+
   // CAN
   private CANHelper CAN = new CANHelper("1F6404FF");
 
   // CONTROLLERS
   private XboxController Controller1, Controller2;
+  private Joystick joystick1;
 
   // BUTTONS CONTROLLER 1
   private JoystickButton ButtonA_1, ButtonB_1, ButtonX_1, ButtonY_1;
@@ -57,18 +70,19 @@ public class RobotContainer {
 
   // SENSORS
   private NavX m_navx;
+  private Pixy m_pixy;
+  private Encoder_AMT103 encoderT1;
 
   // SUBSYSTEMS
   private final DriveTrain m_DriveTrain = new DriveTrain();
   private final Tracker m_Tracker = new Tracker();
 
   // COMMANDS
-
   private Straigth straigth = new Straigth(m_navx, m_DriveTrain, 0.0);
 
-  // #endregion
+  //#endregion
 
-  // #region CONSTRUCTOR
+  //#region CONSTRUCTOR
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -77,20 +91,10 @@ public class RobotContainer {
     setControllers(1);
     configureButtonBindings();
     init();
-
-    // EXECUTE EVERY PULSE
-    m_DriveTrain.setDefaultCommand(new RunCommand(() -> {
-      // Shuffleboard.getTab("Logger").add("Logging", "a").getEntry();
-      m_DriveTrain.arcadeDrive(Controller1.getY(GenericHID.Hand.kLeft), Controller1.getX(GenericHID.Hand.kRight));
-      if (CAN.readData("1F6404AA")[0] == (byte) 1) {
-        new Turn(m_DriveTrain,
-            Shuffleboard.getTab("Vision").add("Angle", 0.0).getEntry().getDouble(0.0) + m_navx.getYaw(), m_navx);
-      }
-    }, m_DriveTrain));
   }
-  // #endregion
+  //#endregion
 
-  // #region BUTTON BINDINGS
+  //#region BUTTON BINDINGS
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by instantiating a {@link GenericHID} or one of its subclasses
@@ -135,7 +139,7 @@ public class RobotContainer {
     ButtonB_1 = new JoystickButton(Controller1, Constants.OI_Map.BUTTON_B.getPort());
     ButtonX_1 = new JoystickButton(Controller1, Constants.OI_Map.BUTTON_X.getPort());
     ButtonY_1 = new JoystickButton(Controller1, Constants.OI_Map.BUTTON_Y.getPort());
-
+    
     // CONTROLLER 2
     if (Qnt_Controllers == 2) {
       Controller2 = new XboxController(Constants.OI_Map.CONTROLLER_2.getPort());
@@ -144,6 +148,8 @@ public class RobotContainer {
       ButtonX_2 = new JoystickButton(Controller2, Constants.OI_Map.BUTTON_X.getPort());
       ButtonY_2 = new JoystickButton(Controller2, Constants.OI_Map.BUTTON_Y.getPort());
     }
+    // JOYSTICK 1
+    joystick1 = new Joystick(0);
   }
   //#endregion
 
@@ -163,6 +169,12 @@ public class RobotContainer {
 
     // SENSORS
     m_navx = new NavX(SerialPort.Port.kMXP);
+    encoderT1 = new Encoder_AMT103(Constants.Sensors.ENC_T1_WHEEL_A.getPort(),Constants.Sensors.ENC_T1_WHEEL_B.getPort(),true);
+    encoderT1.setDistancePerPulse(Math.PI * 4 * 2.54/ 360.0);
+    encoderT1.setMinRate(1.0);
+    encoderT1.setSamplesToAverage(5);
+    m_pixy = new Pixy();
+    m_pixy.initialize();
   }
   //#endregion
 
@@ -174,10 +186,41 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return () -> {
-      m_Tracker.shoot();
-      return null;
-    };
+    return new SequentialCommandGroup(
+      new PIDCommand(new PIDController(Constants.kP,Constants.kI,Constants.kD),
+        () -> m_navx.getPitch(),
+        1,
+        output -> {
+          m_DriveTrain.arcadeDrive(0.0, output);
+        },
+        m_DriveTrain),        
+      new CommandBase() {
+        @Override
+        public void execute() {
+            m_DriveTrain.arcadeDrive(0.0, 0.5);
+        }
+      }
+    );
+  }
+  //#endregion
+
+  //#region CALL BINDERS
+  public void callBinders() {
+    // EXECUTE EVERY PULSE
+    m_DriveTrain.setDefaultCommand(new SequentialCommandGroup(new RunCommand(() -> {
+      if (CAN.readData("1F6404AA")[0] == (byte) 1) {
+      }
+      Block b = m_pixy.getBiggestBlock();
+      if (b != null) {
+        double d = (b.getX() / 360.0), a = (b.getHeight() * b.getWidth()) / 10000.0;
+        m_DriveTrain.arcadeDrive(1.0 - a, d < 0.5 ? (d > -0.5 ? -0.6 : d) : d);
+        System.out.println(1.0 - a);
+      } else {
+        m_DriveTrain.arcadeDrive(-Controller1.getY(GenericHID.Hand.kLeft), Controller1.getX(GenericHID.Hand.kRight));
+        //m_DriveTrain.arcadeDrive(-joystick1.getY(), joystick1.getZ());
+
+      }
+    }, m_DriveTrain)));
   }
   //#endregion
 }
