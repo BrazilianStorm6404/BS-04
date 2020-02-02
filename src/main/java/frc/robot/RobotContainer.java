@@ -7,7 +7,8 @@
 
 package frc.robot;
 
-import java.util.Random;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -33,6 +34,7 @@ import frc.robot.libs.auto.drive.Straigth;
 import frc.robot.libs.can.CANHelper;
 import frc.robot.libs.sensors.Encoder_AMT103;
 import frc.robot.libs.sensors.NavX;
+import frc.robot.libs.sensors.Gyro_ADXRS450;
 import frc.robot.libs.sensors.Pixy;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Tracker;
@@ -49,8 +51,6 @@ public class RobotContainer {
 
   //#region INSTANTIATION
   // SHUFFLEBOARD
-  private ShuffleboardTab tabEnc = Shuffleboard.getTab("ENC"); 
-  private NetworkTableEntry distanceEntry, rateEntry;
 
   // CAN
   private CANHelper CAN = new CANHelper("1F6404FF");
@@ -70,6 +70,7 @@ public class RobotContainer {
 
   // SENSORS
   private NavX m_navx;
+  private Gyro_ADXRS450 giro;
   private Pixy m_pixy;
   private Encoder_AMT103 encoderT1;
 
@@ -103,7 +104,15 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // LAUNCHER
-    ButtonA_1.whenPressed(() -> LauncherPC.set(1.0)).whenReleased(() -> LauncherPC.set(0.0));
+    ButtonA_1.whenPressed(() -> 
+      m_navx.reset()
+    ).whenHeld(
+      new PIDCommand(new PIDController(Constants.kP,Constants.kI,Constants.kD),
+      () -> m_navx.getYaw(),
+      90,
+      output -> m_DriveTrain.arcadeDrive(-Controller1.getY(GenericHID.Hand.kLeft), output),
+      m_DriveTrain)
+    );
 
     // CLIMB
     ButtonB_1.whenPressed(() -> {
@@ -114,7 +123,7 @@ public class RobotContainer {
       climbRight.set(0.0);
     });
 
-    // TELECOSPIC
+    // TELESCOPIC
     ButtonX_1.whenPressed(() -> telescopic.set(Constants.Motors.getTelescopicSpeed()))
         .whenReleased(() -> telescopic.set(0.0));
 
@@ -168,6 +177,7 @@ public class RobotContainer {
     StorageWheel = new WPI_VictorSPX(Constants.Motors.STORAGE_WHEEL.getPortCAN());
 
     // SENSORS
+    giro = new Gyro_ADXRS450();
     m_navx = new NavX(SerialPort.Port.kMXP);
     encoderT1 = new Encoder_AMT103(Constants.Sensors.ENC_T1_WHEEL_A.getPort(),Constants.Sensors.ENC_T1_WHEEL_B.getPort(),true);
     encoderT1.setDistancePerPulse(Math.PI * 4 * 2.54/ 360.0);
@@ -175,6 +185,8 @@ public class RobotContainer {
     encoderT1.setSamplesToAverage(5);
     m_pixy = new Pixy();
     m_pixy.initialize();
+
+    // SHUFFLEBOARD
   }
   //#endregion
 
@@ -185,21 +197,14 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    m_navx.reset();
     // An ExampleCommand will run in autonomous
     return new SequentialCommandGroup(
       new PIDCommand(new PIDController(Constants.kP,Constants.kI,Constants.kD),
-        () -> m_navx.getPitch(),
-        1,
-        output -> {
-          m_DriveTrain.arcadeDrive(0.0, output);
-        },
-        m_DriveTrain),        
-      new CommandBase() {
-        @Override
-        public void execute() {
-            m_DriveTrain.arcadeDrive(0.0, 0.5);
-        }
-      }
+        () -> m_navx.getYaw(),
+        0,
+        output -> m_DriveTrain.arcadeDrive(0.0, output),
+        m_DriveTrain)
     );
   }
   //#endregion
@@ -207,7 +212,7 @@ public class RobotContainer {
   //#region CALL BINDERS
   public void callBinders() {
     // EXECUTE EVERY PULSE
-    m_DriveTrain.setDefaultCommand(new SequentialCommandGroup(new RunCommand(() -> {
+    m_DriveTrain.setDefaultCommand(new RunCommand(() -> {
       if (CAN.readData("1F6404AA")[0] == (byte) 1) {
       }
       Block b = m_pixy.getBiggestBlock();
@@ -220,7 +225,7 @@ public class RobotContainer {
         //m_DriveTrain.arcadeDrive(-joystick1.getY(), joystick1.getZ());
 
       }
-    }, m_DriveTrain)));
+    }, m_DriveTrain));
   }
   //#endregion
 }

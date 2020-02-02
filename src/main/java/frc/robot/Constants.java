@@ -134,10 +134,10 @@ public final class Constants {
     
     //#region AUTONOMOUS
         //PID
-        public static double kP = 0.2, kI = 0.1, kD = 0.2;
+        public static double kP = 0.03, kI = 0.00003, kD = 0.006;
 
         // DISTANCE TO SHOT
-        public static double minDistToShot = 0,maxDistToShot = 0;
+        public static double minDistToShot = 0, maxDistToShot = 0;
     //#endregion
 
 }
