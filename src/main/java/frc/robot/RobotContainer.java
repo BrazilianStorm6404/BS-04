@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.libs.auto.drive.Straigth;
 import frc.robot.libs.can.CANHelper;
+import frc.robot.libs.logger.Logger;
 import frc.robot.libs.sensors.Encoder_AMT103;
 import frc.robot.libs.sensors.NavX;
 import frc.robot.libs.sensors.Gyro_ADXRS450;
@@ -50,6 +51,9 @@ import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 public class RobotContainer {
 
   //#region INSTANTIATION
+  // LOGGER
+  Logger logger;
+
   // SHUFFLEBOARD
 
   // CAN
@@ -187,6 +191,9 @@ public class RobotContainer {
     m_pixy.initialize();
 
     // SHUFFLEBOARD
+
+    // LOGGER
+    logger = new Logger();
   }
   //#endregion
 
@@ -213,6 +220,7 @@ public class RobotContainer {
   public void callBinders() {
     // EXECUTE EVERY PULSE
     m_DriveTrain.setDefaultCommand(new RunCommand(() -> {
+      logger.Log("aass", m_navx.getWorldLinearAccelZ());
       if (CAN.readData("1F6404AA")[0] == (byte) 1) {
       }
       Block b = m_pixy.getBiggestBlock();
