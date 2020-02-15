@@ -7,25 +7,17 @@
 
 package frc.robot;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -34,12 +26,12 @@ import frc.robot.libs.auto.drive.Straigth;
 import frc.robot.libs.can.CANHelper;
 import frc.robot.libs.logger.Logger;
 import frc.robot.libs.sensors.Encoder_AMT103;
-import frc.robot.libs.sensors.NavX;
 import frc.robot.libs.sensors.Gyro_ADXRS450;
+import frc.robot.libs.sensors.NavX;
 import frc.robot.libs.sensors.Pixy;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Storage;
 import frc.robot.subsystems.Tracker;
-import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -70,20 +62,19 @@ public class RobotContainer {
   private JoystickButton ButtonA_2, ButtonB_2, ButtonX_2, ButtonY_2;
 
   // MOTORS
-  private WPI_VictorSPX LauncherPC, Storage, intakeMotor, StorageWheel, climbLeft, climbRight, telescopic;
+  private WPI_VictorSPX  intakeMotor, climbLeft, climbRight, telescopic;
 
   // SENSORS
   private NavX m_navx;
-  private Gyro_ADXRS450 giro;
   private Pixy m_pixy;
   private Encoder_AMT103 encoderT1;
 
   // SUBSYSTEMS
   private final DriveTrain m_DriveTrain = new DriveTrain();
   private final Tracker m_Tracker = new Tracker();
+  private final Storage m_Storage = new Storage();
 
   // COMMANDS
-  private Straigth straigth = new Straigth(m_navx, m_DriveTrain, 0.0);
 
   //#endregion
 
@@ -176,12 +167,8 @@ public class RobotContainer {
     climbRight = new WPI_VictorSPX(Constants.Motors.CLIMB_RIGHT.getPortCAN());
     telescopic = new WPI_VictorSPX(Constants.Motors.TELESCOPIC.getPortCAN());
     intakeMotor = new WPI_VictorSPX(Constants.Motors.INTAKE.getPortCAN());
-    LauncherPC = new WPI_VictorSPX(Constants.Motors.SHOOTER.getPortCAN());
-    Storage = new WPI_VictorSPX(Constants.Motors.STORAGE.getPortCAN());
-    StorageWheel = new WPI_VictorSPX(Constants.Motors.STORAGE_WHEEL.getPortCAN());
 
     // SENSORS
-    giro = new Gyro_ADXRS450();
     m_navx = new NavX(SerialPort.Port.kMXP);
     encoderT1 = new Encoder_AMT103(Constants.Sensors.ENC_T1_WHEEL_A.getPort(),Constants.Sensors.ENC_T1_WHEEL_B.getPort(),true);
     encoderT1.setDistancePerPulse(Math.PI * 4 * 2.54/ 360.0);
@@ -220,20 +207,25 @@ public class RobotContainer {
   public void callBinders() {
     // EXECUTE EVERY PULSE
     m_DriveTrain.setDefaultCommand(new RunCommand(() -> {
-      logger.Log("aass", m_navx.getWorldLinearAccelZ());
-      if (CAN.readData("1F6404AA")[0] == (byte) 1) {
-      }
+      /*
       Block b = m_pixy.getBiggestBlock();
       if (b != null) {
         double d = (b.getX() / 360.0), a = (b.getHeight() * b.getWidth()) / 10000.0;
         m_DriveTrain.arcadeDrive(1.0 - a, d < 0.5 ? (d > -0.5 ? -0.6 : d) : d);
         System.out.println(1.0 - a);
       } else {
+      */
         m_DriveTrain.arcadeDrive(-Controller1.getY(GenericHID.Hand.kLeft), Controller1.getX(GenericHID.Hand.kRight));
         //m_DriveTrain.arcadeDrive(-joystick1.getY(), joystick1.getZ());
-
-      }
     }, m_DriveTrain));
+
+    m_Storage.setDefaultCommand(new RunCommand(() -> {
+      if(!m_Storage.isCorrect()) {
+        m_Storage.move(-0.5);
+      } else {
+        m_Storage.move(0.0);
+      }
+    },m_Storage));
   }
   //#endregion
 }

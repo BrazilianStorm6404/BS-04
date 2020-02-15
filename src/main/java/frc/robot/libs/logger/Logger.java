@@ -8,9 +8,7 @@
 package frc.robot.libs.logger;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -42,7 +40,7 @@ public class Logger {
             }
         // LOGGER
 		try {
-            log = new PrintWriter(irl + DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now()) + "-Log.txt");
+            log = new PrintWriter(irl + DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now()) + "-Log.log");
             log.println(" STARTED ");
             log.flush();
         } catch (Exception e) {
