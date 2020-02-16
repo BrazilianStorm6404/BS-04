@@ -8,9 +8,7 @@
 package frc.robot.libs.logger;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -21,8 +19,8 @@ import java.util.HashMap;
  */
 public class Logger {
     //#region VARIABLES
-    private static PrintWriter log;
-    private String irl = "/home/lvuser/Logs";
+    private PrintWriter log;
+    private String irl = "/home/lvuser/Logs/";
     private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
     //#endregion  
 
@@ -42,9 +40,10 @@ public class Logger {
             }
         // LOGGER
 		try {
-            log = new PrintWriter(irl + DateTimeFormatter.ofPattern("yyyy/MM/dd").format(LocalDateTime.now()) + "-Log.txt", "UTF-8");
+            log = new PrintWriter(irl + DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now()) + "-Log.log");
             log.println(" STARTED ");
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            log.flush();
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -58,7 +57,7 @@ public class Logger {
      */
     public void Log(String name, Object text) {
         log.println("name: " + name + 
-            "info:" + text + 
+            "info:" + text.toString() + 
             "time: "+ dtf.format(LocalDateTime.now()));
         log.flush();
     }
@@ -74,7 +73,7 @@ public class Logger {
     public void Log(HashMap<String,Object> listData) {
         for(HashMap.Entry<String, Object> entry : listData.entrySet()){ 
             log.println("name: " + entry.getKey() + 
-                "info:" + entry.getValue() + 
+                "info:" + entry.getValue().toString() + 
                 "time: "+ dtf.format(LocalDateTime.now()));
             log.flush();
         }

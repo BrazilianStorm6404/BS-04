@@ -7,7 +7,10 @@
 
 package frc.robot.libs.auto.drive;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
 import frc.robot.libs.sensors.NavX;
@@ -21,6 +24,10 @@ public class Turn extends PIDCommand {
    * Creates a new Turn.
    */
   private static boolean killed = false;
+
+  private DriveTrain m_dt;
+  private ShuffleboardTab shooterTab;
+  private NetworkTableEntry angleEntry;
   public Turn(DriveTrain dt, double setpoint, NavX navX) {
     super(
         // The controller that the command will use
@@ -42,6 +49,10 @@ public class Turn extends PIDCommand {
           }
         });
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(dt);
+    this.m_dt = dt;
+    shooterTab = Shuffleboard.getTab("Shooter");
+    angleEntry = shooterTab.add("Erro PID", 0).getEntry();
     // Configure additional PID options by calling `getController` here.
   }
 
@@ -49,5 +60,10 @@ public class Turn extends PIDCommand {
   @Override
   public boolean isFinished() {
     return killed;
+  }
+
+  @Override
+  public void execute() {
+    angleEntry.setDouble(getController().getPositionError());
   }
 }

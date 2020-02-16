@@ -14,7 +14,7 @@ import frc.robot.Constants;
  */
 public class WithoutAirDrag {
     private boolean getPosibilite(double distanceToTry){
-        return (distanceToTry>=Constants.minDistToShot & distanceToTry<=Constants.maxDistToShot);
+        return (distanceToTry>=Constants.minDistToShot && distanceToTry<=Constants.maxDistToShot);
     }
     public Double getAngleToPitch(double distanceToTry){
         if(getPosibilite(distanceToTry))

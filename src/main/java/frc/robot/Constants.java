@@ -24,11 +24,12 @@ public final class Constants {
      * Enum for all sensors in the robot.
      */
     public static enum Sensors {
-        _HORIZONTAL(0),
-        _VERTICAL(0),
-        OS_STORAGE_1(0),
-        OS_STORAGE_2(0),
-        OS_STORAGE_3(0),
+        
+        POT_VERTICAL(0),
+        LIMIT_IR_PRES(0),
+        ULTRASONIC_BALL(0),
+        LIMIT_OPTIC_LOW(0),
+        LIMIT_OPTIC_HIGH(0),
         ENC_T1_WHEEL_A(1),
         ENC_T1_WHEEL_B(2),
         ENC_T2_WHEEL_A(0),
@@ -58,7 +59,6 @@ public final class Constants {
         INTAKE(0,0), 
         SHOOTER(0,0),  
         STORAGE(0,0),
-        STORAGE_WHEEL(0,0),
         HORIZONTAL_TURNER(0,0),
         VERTICAL_TURNER(0,0),
         TELESCOPIC(0,0), 
