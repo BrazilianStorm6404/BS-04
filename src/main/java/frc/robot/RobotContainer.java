@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.libs.auto.drive.Straigth;
 import frc.robot.libs.auto.drive.Turn;
-import frc.robot.libs.can.CANHelper;
 import frc.robot.libs.logger.Logger;
 import frc.robot.libs.sensors.Encoder_AMT103;
 import frc.robot.libs.sensors.Gyro_ADXRS450;
@@ -76,15 +75,9 @@ public class RobotContainer {
   private final Storage m_Storage = new Storage();
 
   // COMMANDS
-<<<<<<< HEAD
-<<<<<<< HEAD
 
   // VARIABLES
   private double ax, ay;
-=======
->>>>>>> fb39c9460ddfb0bc28d3aa968fd9add38a2b7846
-=======
->>>>>>> fb39c9460ddfb0bc28d3aa968fd9add38a2b7846
 
   //#endregion
 

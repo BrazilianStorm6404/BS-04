@@ -34,7 +34,8 @@ public class Storage extends SubsystemBase {
   }
 
   public boolean isCorrect() {
-    return (limit_control.get() && ultrasonic.getRangeMM() < 450);
+    return true;
+    // return (limit_control.get() && ultrasonic.getRangeMM() < 450);
   }
 
   public void move(double force) {
