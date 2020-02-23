@@ -7,6 +7,9 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -29,12 +32,12 @@ private final DifferentialDrive m_drive;
     m_drive = new DifferentialDrive(
       // LEFT SPEED CONTROLLER
       new SpeedControllerGroup(
-        new Spark(Constants.Motors.DRIVE_LEFT_FRONT.getPortPWM()), 
-        new Spark(Constants.Motors.DRIVE_LEFT_BACK.getPortPWM())),
+        new WPI_VictorSPX(Constants.Motors.DRIVE_LEFT_FRONT.getPortCAN()), 
+        new WPI_VictorSPX(Constants.Motors.DRIVE_LEFT_BACK.getPortCAN())),
       // RIGHT SPEED CONTROLLER
       new SpeedControllerGroup(
-        new Spark(Constants.Motors.DRIVE_RIGHT_BACK.getPortPWM()),
-      new Spark(Constants.Motors.DRIVE_RIGHT_FRONT.getPortPWM()))
+        new WPI_VictorSPX(Constants.Motors.DRIVE_RIGHT_BACK.getPortCAN()),
+      new WPI_VictorSPX(Constants.Motors.DRIVE_RIGHT_FRONT.getPortCAN()))
     );
   }
  //#endregion

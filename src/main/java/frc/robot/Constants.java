@@ -52,18 +52,20 @@ public final class Constants {
      * Enum for all motors in the robot.
      */
     public static enum Motors {
-        DRIVE_RIGHT_FRONT(1,0), 
-        DRIVE_RIGHT_BACK(0,0),  
-        DRIVE_LEFT_FRONT(2,0),
-        DRIVE_LEFT_BACK(3,0),
+        DRIVE_RIGHT_FRONT(-1,13), 
+        DRIVE_RIGHT_BACK(-1,14),  
+        DRIVE_LEFT_FRONT(-1,11),
+        DRIVE_LEFT_BACK(-1,12),
+
         INTAKE(0,0), 
-        SHOOTER(0,0),  
-        STORAGE(0,0),
+        SHOOTER(-1,18),  
+        STORAGE(-1,17),
         HORIZONTAL_TURNER(0,0),
         VERTICAL_TURNER(0,0),
-        TELESCOPIC(0,0), 
-        CLIMB_LEFT(0,0),  
-        CLIMB_RIGHT(0,0);
+
+        TELESCOPIC(2,-1), 
+        CLIMB_LEFT(7,-1),  
+        CLIMB_RIGHT(8,-1);
 
         private int PortValuePWM;
         private int PortValueCAN;
@@ -138,6 +140,17 @@ public final class Constants {
 
         // DISTANCE TO SHOT
         public static double minDistToShot = 0, maxDistToShot = 0;
+        // Constantes provindas do FRC-Characterization
+        // Não foram definidas ainda.
+        public static double ksVolts = 0.22;
+        public static double kvVoltSecondsPerMeter = 1.98;
+        public static double kaVoltSecondsSquaredPerMeter = 0.2;
+        public static double kPDriveVel = 8.5;
+        public static double kTrackwidthMeter = 0.69;
+        public static double kMaxSpeedMetersPerSeconds = 3;
+        public static double kMaxAccelerationMetersPerSecondSquared = 3;
+        public static double kRamseteB = 2;
+        public static double kRamseteZeta = 0.7;
     //#endregion
 
 }

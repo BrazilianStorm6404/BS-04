@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.libs.auto.drive.Straigth;
-import frc.robot.libs.CAN.CANHelper;
+import frc.robot.libs.can.CANHelper;
 import frc.robot.libs.logger.Logger;
 import frc.robot.libs.sensors.Encoder_AMT103;
 import frc.robot.libs.sensors.Gyro_ADXRS450;
@@ -49,7 +49,7 @@ public class RobotContainer {
   // SHUFFLEBOARD
 
   // CAN
-  private CANHelper CAN = new CANHelper("1F6404FF");
+  //private CANHelper CAN = new CANHelper("1F6404FF");
 
   // CONTROLLERS
   private XboxController Controller1, Controller2;
