@@ -7,49 +7,60 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants;
 
+public class Drivetrain extends PIDSubsystem {
 
-public class DriveTrain extends SubsystemBase {
-//#region INSTANTIATION
-private final DifferentialDrive m_drive;
+  private WPI_VictorSPX leftFront, leftBack, rightFront, rightBack;
+  private SpeedControllerGroup left, right;
+  private final DifferentialDrive m_drive;
+  private AHRS navX;
 
-//#endregion
+  public Drivetrain(AHRS navX) {
+    super(new PIDController(Constants.kP, Constants.kI, Constants.kD));
 
-  //#region CONSTRUCTOR
-  /**
-  * Creates a new Drivetrain.
-  */
-  public DriveTrain() {
+    this.navX = navX;
 
-    m_drive = new DifferentialDrive(
-      // LEFT SPEED CONTROLLER
-      new SpeedControllerGroup(
-        new WPI_VictorSPX(Constants.Motors.DRIVE_LEFT_FRONT.getPortCAN()), 
-        new WPI_VictorSPX(Constants.Motors.DRIVE_LEFT_BACK.getPortCAN())),
-      // RIGHT SPEED CONTROLLER
-      new SpeedControllerGroup(
-        new WPI_VictorSPX(Constants.Motors.DRIVE_RIGHT_BACK.getPortCAN()),
-      new WPI_VictorSPX(Constants.Motors.DRIVE_RIGHT_FRONT.getPortCAN()))
-    );
+    leftFront = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_LEFT_FRONT);
+    leftBack = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_LEFT_BACK);
+    rightFront = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_RIGHT_FRONT);
+    rightBack = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_RIGHT_BACK);
+
+    left = new SpeedControllerGroup(leftFront, leftBack);
+    right = new SpeedControllerGroup(rightFront, rightBack);
+
+    m_drive = new DifferentialDrive(left, right);
   }
- //#endregion
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
 
-  //#region ARCADE DRIVE
   public void arcadeDrive(double fwd, double rot) {
     m_drive.arcadeDrive(fwd, rot);
   }
-  //#endregion
+
+  public void stop(){
+    m_drive.arcadeDrive(0, 0);
+  }
+
+  @Override
+  protected void useOutput(double output, double setpoint) {
+    Shuffleboard.getTab("DriveTarin").addNumber("PID Output", () -> output);
+
+  }
+
+  @Override
+  protected double getMeasurement() {
+    return navX.getYaw();
+  }
 }

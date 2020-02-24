@@ -7,13 +7,14 @@
 
 package frc.robot.libs.auto.drive;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
-import frc.robot.libs.sensors.NavX;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Drivetrain;
 
-public class Straigth extends PIDCommand {
+public class Straight extends PIDCommand {
   /**
    * Creates a new Straigth.
    */
@@ -21,7 +22,7 @@ public class Straigth extends PIDCommand {
   /**
    * Create a new Command to drive straight using a NavX sensor
    */
-  public Straigth(NavX navX, DriveTrain drivetrain, double setpoint) {
+  public Straight(AHRS navX, Drivetrain drivetrain, double setpoint) {
     super(
         new PIDController(Constants.kP, Constants.kI, Constants.kD),
         () -> {

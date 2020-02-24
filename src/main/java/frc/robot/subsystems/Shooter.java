@@ -8,34 +8,37 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Storage extends SubsystemBase {
+public class Shooter extends SubsystemBase {
 
-  private VictorSPX belt, joint, intake;
+  private Spark angle;
+  private VictorSP belt;
+  private VictorSPX shoot;
 
+  private ADXRS450_Gyro gyro;
+  private DigitalInput limitHigh;
 
-  private DigitalInput lowerLimit, IR_Internal;
-  private Ultrasonic ultrasonic;
+  public Shooter() {
+    angle = new Spark(Constants.Ports.Motors.SHOOTER_ANGLE);
+    belt = new VictorSP(Constants.Ports.Motors.SHOOTER_BELT);
+    shoot = new VictorSPX(Constants.Ports.Motors.SHOOTER_SHOOT);
 
-
-  public Storage() {
-    belt = new VictorSPX(Constants.Ports.Motors.STORAGE_BELT);
-    joint = new VictorSPX(Constants.Ports.Motors.COLLECTOR_JOINT);
-    intake = new VictorSPX(Constants.Ports.Motors.COLLECTOR_INTAKE);
-
-    lowerLimit = new DigitalInput(Constants.Ports.Sensors.COLLECTOR_LIMIT);
-    IR_Internal = new DigitalInput(Constants.Ports.Sensors.STORAGE_IR);
-    ultrasonic = new  Ultrasonic(Constants.Ports.Sensors.STORAGE_ULTRASONIC_PING, Constants.Ports.Sensors.STORAGE_ULTRASONIC_ECHO);;
+    gyro = new ADXRS450_Gyro();
+    limitHigh = new DigitalInput(Constants.Ports.Sensors.SHOOTER_LIMIT_HIGH);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void Shoot(){
   }
 
 }

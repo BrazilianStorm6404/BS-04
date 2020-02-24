@@ -11,6 +11,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -22,14 +23,9 @@ import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.libs.auto.drive.Straigth;
-import frc.robot.libs.can.CANHelper;
-import frc.robot.libs.logger.Logger;
-import frc.robot.libs.sensors.Encoder_AMT103;
-import frc.robot.libs.sensors.Gyro_ADXRS450;
-import frc.robot.libs.sensors.NavX;
-import frc.robot.libs.sensors.Pixy;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.libs.auto.drive.Straight;
+import frc.robot.libs.sensorsIMPL.Pixy;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Storage;
 import frc.robot.subsystems.Tracker;
 
@@ -43,8 +39,6 @@ import frc.robot.subsystems.Tracker;
 public class RobotContainer {
 
   //#region INSTANTIATION
-  // LOGGER
-  Logger logger;
 
   // SHUFFLEBOARD
 
@@ -65,12 +59,13 @@ public class RobotContainer {
   private WPI_VictorSPX  intakeMotor, climbLeft, climbRight, telescopic;
 
   // SENSORS
-  private NavX m_navx;
+  private AHRS m_navx;
   private Pixy m_pixy;
-  private Encoder_AMT103 encoderT1;
+  //This must be refactored
+  //private Encoder_AMT103 encoderT1;
 
   // SUBSYSTEMS
-  private final DriveTrain m_DriveTrain = new DriveTrain();
+  private final Drivetrain m_DriveTrain = new Drivetrain();
   private final Tracker m_Tracker = new Tracker();
   private final Storage m_Storage = new Storage();
 
@@ -98,16 +93,19 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // LAUNCHER
-    ButtonA_1.whenPressed(() -> 
-      m_navx.reset()
-    ).whenHeld(
-      new PIDCommand(new PIDController(Constants.kP,Constants.kI,Constants.kD),
-      () -> m_navx.getYaw(),
-      90,
-      output -> m_DriveTrain.arcadeDrive(-Controller1.getY(GenericHID.Hand.kLeft), output),
-      m_DriveTrain)
-    );
+
+    // ButtonA_1.whenPressed(()-> Robot.gyro.reset());
+
+    // // LAUNCHER
+    // ButtonA_1.whenPressed(() -> 
+    //   m_navx.reset()
+    // ).whenHeld(
+    //   new PIDCommand(new PIDController(Constants.kP,Constants.kI,Constants.kD),
+    //   () -> m_navx.getYaw(),
+    //   90,
+    //   output -> m_DriveTrain.arcadeDrive(-Controller1.getY(GenericHID.Hand.kLeft), output),
+    //   m_DriveTrain)
+    // );
 
     // CLIMB
     ButtonB_1.whenPressed(() -> {
@@ -165,22 +163,21 @@ public class RobotContainer {
     // MOTORS
     climbLeft = new WPI_VictorSPX(Constants.Motors.CLIMB_LEFT.getPortCAN());
     climbRight = new WPI_VictorSPX(Constants.Motors.CLIMB_RIGHT.getPortCAN());
-    telescopic = new WPI_VictorSPX(Constants.Motors.TELESCOPIC.getPortCAN());
-    intakeMotor = new WPI_VictorSPX(Constants.Motors.INTAKE.getPortCAN());
+    telescopic = new WPI_VictorSPX(Constants.Motors.CLIMB_TELESCOPIC.getPortCAN());
+    intakeMotor = new WPI_VictorSPX(Constants.Motors.COLLECTOR_INTAKE.getPortCAN());
 
     // SENSORS
-    m_navx = new NavX(SerialPort.Port.kMXP);
-    encoderT1 = new Encoder_AMT103(Constants.Sensors.ENC_T1_WHEEL_A.getPort(),Constants.Sensors.ENC_T1_WHEEL_B.getPort(),true);
-    encoderT1.setDistancePerPulse(Math.PI * 4 * 2.54/ 360.0);
-    encoderT1.setMinRate(1.0);
-    encoderT1.setSamplesToAverage(5);
+    m_navx = new AHRS(SerialPort.Port.kMXP);
+    
+    //This must be refactored
+    // encoderT1 = new Encoder_AMT103(Constants.Sensors.ENC_T1_WHEEL_A.getPort(),Constants.Sensors.ENC_T1_WHEEL_B.getPort(),true);
+    // encoderT1.setDistancePerPulse(Math.PI * 4 * 2.54/ 360.0);
+    // encoderT1.setMinRate(1.0);
+    // encoderT1.setSamplesToAverage(5);
     m_pixy = new Pixy();
     m_pixy.initialize();
 
     // SHUFFLEBOARD
-
-    // LOGGER
-    logger = new Logger();
   }
   //#endregion
 

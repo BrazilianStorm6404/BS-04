@@ -7,11 +7,12 @@
 
 package frc.robot.libs.auto.drive;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
-import frc.robot.libs.sensors.NavX;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Drivetrain;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -21,7 +22,7 @@ public class Turn extends PIDCommand {
    * Creates a new Turn.
    */
   private static boolean killed = false;
-  public Turn(DriveTrain dt, double setpoint, NavX navX) {
+  public Turn(Drivetrain dt, double setpoint, AHRS navX) {
     super(
         // The controller that the command will use
         new PIDController(Constants.kP, Constants.kI, Constants.kD),
