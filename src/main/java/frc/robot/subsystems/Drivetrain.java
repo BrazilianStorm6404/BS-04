@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -23,11 +24,24 @@ public class Drivetrain extends PIDSubsystem {
   private SpeedControllerGroup _left, _right;
   private DifferentialDrive m_drive;
   private AHRS _navX;
+  //ENCODERS
+  //***
+  Encoder encoderLeft, encoderRight;
 
   public Drivetrain(AHRS navX) {
     super(new PIDController(Constants.drive_kP, Constants.drive_kI, Constants.drive_kD));
 
     this._navX = navX;
+
+    encoderLeft = new Encoder(Constants.Ports.Sensors.DRIVE_ENC_LEFT_A, Constants.Ports.Sensors.DRIVE_ENC_LEFT_B, false);
+    encoderLeft.setDistancePerPulse(Math.PI * 4 * 2.54 / 360.0);
+    encoderLeft.setMinRate(1.0);
+    encoderLeft.setSamplesToAverage(5);
+
+    encoderRight = new Encoder(Constants.Ports.Sensors.DRIVE_ENC_RIGHT_A, Constants.Ports.Sensors.DRIVE_ENC_RIGHT_B, false);
+    encoderRight.setDistancePerPulse(Math.PI * 4 * 2.54 / 360.0);
+    encoderRight.setMinRate(1.0);
+    encoderRight.setSamplesToAverage(5);
 
     _leftFront = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_LEFT_FRONT);
     _leftBack = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_LEFT_BACK);

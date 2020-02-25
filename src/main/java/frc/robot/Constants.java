@@ -34,8 +34,8 @@ public final class Constants {
             public static final int STORAGE_OPTIC = 9; 
             public static final int DRIVE_ENC_LEFT_A = 0;
             public static final int DRIVE_ENC_LEFT_B = 1;
-            public static final int DRIVE_ENC_RIGTH_A = 2;
-            public static final int DRIVE_ENC_RIGTH_B = 3;
+            public static final int DRIVE_ENC_RIGHT_A = 2;
+            public static final int DRIVE_ENC_RIGHT_B = 3;
 
         }
 

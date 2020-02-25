@@ -51,7 +51,7 @@ public class RobotContainer {
   private final Drivetrain m_DriveTrain = new Drivetrain( m_navx);
   private final Shooter m_Shooter = new Shooter();
   private final Storage m_Storage = new Storage();
-  private final PowerDistributionPanel m_PDP = new PowerDistributionPanel();
+  private PowerDistributionPanel m_PDP;
 
   // COMMANDS
 
@@ -95,7 +95,7 @@ public class RobotContainer {
     pilot_ButtonA.whileHeld(() -> m_DriveTrain.arcadeDrive(0, 1), m_DriveTrain);
 
     CO_ButtonB.whileHeld(()-> {
-      if(COpilot.getY(GenericHID.Hand.kLeft)>0.2){
+      if(-COpilot.getY(GenericHID.Hand.kLeft) > 0.2){
         m_Climb.climb();
       }
       else m_Climb.stopClimb();
@@ -115,13 +115,8 @@ public class RobotContainer {
     // SENSORS
     m_navx = new AHRS(SerialPort.Port.kMXP);
     
-    //This must be refactored
-    // encoderT1 = new Encoder_AMT103(Constants.Sensors.ENC_T1_WHEEL_A.getPort(),Constants.Sensors.ENC_T1_WHEEL_B.getPort(),true);
-    // encoderT1.setDistancePerPulse(Math.PI * 4 * 2.54/ 360.0);
-    // encoderT1.setMinRate(1.0);
-    // encoderT1.setSamplesToAverage(5);
-    //m_pixy = new Pixy();
-    //m_pixy.initialize();
+    m_PDP  = new PowerDistributionPanel(0);
+
 
   }
   
