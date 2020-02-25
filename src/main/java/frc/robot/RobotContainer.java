@@ -7,83 +7,78 @@
 
 package frc.robot;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.libs.auto.drive.Straight;
+import frc.robot.commands.ActivateShooter;
+import frc.robot.commands.ControlStorage;
 import frc.robot.libs.sensorsIMPL.Pixy;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Storage;
-import frc.robot.subsystems.Tracker;
 
-/**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a "declarative" paradigm, very little robot logic should
- * actually be handled in the {@link Robot} periodic methods (other than the
- * scheduler calls). Instead, the structure of the robot (including subsystems,
- * commands, and button mappings) should be declared here.
- */
+  
 public class RobotContainer {
 
-  //#region INSTANTIATION
-
-  // SHUFFLEBOARD
-
-  // CAN
-  //private CANHelper CAN = new CANHelper("1F6404FF");
-
-  // CONTROLLERS
-  private XboxController Controller1, Controller2;
-  private Joystick joystick1;
+  private XboxController pilot, COpilot;
 
   // BUTTONS CONTROLLER 1
-  private JoystickButton ButtonA_1, ButtonB_1, ButtonX_1, ButtonY_1;
+  private JoystickButton pilot_RB, pilot_ButtonA;
 
   // BUTTONS CONTROLLER 2
-  private JoystickButton ButtonA_2, ButtonB_2, ButtonX_2, ButtonY_2;
-
-  // MOTORS
-  private WPI_VictorSPX  intakeMotor, climbLeft, climbRight, telescopic;
+  private JoystickButton CO_ButtonX, CO_ButtonB;
 
   // SENSORS
   private AHRS m_navx;
   private Pixy m_pixy;
+
   //This must be refactored
   //private Encoder_AMT103 encoderT1;
 
   // SUBSYSTEMS
-  private final Drivetrain m_DriveTrain = new Drivetrain();
-  private final Tracker m_Tracker = new Tracker();
+  private final Climb m_Climb = new Climb();
+  private final Drivetrain m_DriveTrain = new Drivetrain( m_navx);
+  private final Shooter m_Shooter = new Shooter();
   private final Storage m_Storage = new Storage();
+  private final PowerDistributionPanel m_PDP = new PowerDistributionPanel();
 
   // COMMANDS
 
-  //#endregion
 
   //#region CONSTRUCTOR
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Configure the button bindings
-    setControllers(1);
+    setControllers();
     configureButtonBindings();
     init();
   }
   //#endregion
+
+
+  public void setControllers() {
+
+    pilot = new XboxController(Constants.OI_Map.PILOT);
+    pilot_RB = new JoystickButton(pilot, Constants.OI_Map.BUTTON_RIGHT);
+    pilot_ButtonA = new JoystickButton(pilot, Constants.OI_Map.BUTTON_A);
+
+    COpilot = new XboxController(Constants.OI_Map.COPILOT);
+    CO_ButtonX = new JoystickButton(COpilot, Constants.OI_Map.BUTTON_X);
+    CO_ButtonB = new JoystickButton(COpilot, Constants.OI_Map.BUTTON_B);
+
+    }
 
   //#region BUTTON BINDINGS
   /**
@@ -94,77 +89,28 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    // ButtonA_1.whenPressed(()-> Robot.gyro.reset());
+    CO_ButtonX.whenPressed(()-> m_Storage.pullPowerCell(), m_Storage)
+      .whenReleased(() -> m_Storage.stopPowerCell(), m_Storage);
 
-    // // LAUNCHER
-    // ButtonA_1.whenPressed(() -> 
-    //   m_navx.reset()
-    // ).whenHeld(
-    //   new PIDCommand(new PIDController(Constants.kP,Constants.kI,Constants.kD),
-    //   () -> m_navx.getYaw(),
-    //   90,
-    //   output -> m_DriveTrain.arcadeDrive(-Controller1.getY(GenericHID.Hand.kLeft), output),
-    //   m_DriveTrain)
-    // );
+    pilot_ButtonA.whileHeld(() -> m_DriveTrain.arcadeDrive(0, 1), m_DriveTrain);
 
-    // CLIMB
-    ButtonB_1.whenPressed(() -> {
-      climbLeft.set(Constants.Motors.getClimbSpeed());
-      climbRight.set(Constants.Motors.getClimbSpeed());
-    }).whenReleased(() -> {
-      climbLeft.set(0.0);
-      climbRight.set(0.0);
-    });
+    CO_ButtonB.whileHeld(()-> {
+      if(COpilot.getY(GenericHID.Hand.kLeft)>0.2){
+        m_Climb.climb();
+      }
+      else m_Climb.stopClimb();
+    }, m_Climb)
+    .whenReleased(()-> m_Climb.stopClimb(), m_Climb);
 
-    // TELESCOPIC
-    ButtonX_1.whenPressed(() -> telescopic.set(Constants.Motors.getTelescopicSpeed()))
-        .whenReleased(() -> telescopic.set(0.0));
+    pilot_RB.whenPressed(new ActivateShooter(m_Shooter, m_Storage, m_PDP));
 
-    // INTAKE
-    ButtonY_1.whenPressed(() -> intakeMotor.set(Constants.Motors.getIntakeSpeed()))
-        .whenReleased(() -> intakeMotor.set(0.0));
   }
   //#endregion
 
-  //#region SET CONTROLLERS 
-  /**
-   * Constructor for the OI
-   * 
-   * @param Qnt_Controllers quantity of controllers used in the robot.
-   *                        <p>
-   *                        <b><h10> MAXIMUM OF 2 CONTROLLERS </h10> </b>
-   */
-  public void setControllers(@Nonnull @Nonnegative int Qnt_Controllers) {
-    // CONTROLLER 1
-    Controller1 = new XboxController(Constants.OI_Map.CONTROLLER_1.getPort());
-    ButtonA_1 = new JoystickButton(Controller1, Constants.OI_Map.BUTTON_A.getPort());
-    ButtonB_1 = new JoystickButton(Controller1, Constants.OI_Map.BUTTON_B.getPort());
-    ButtonX_1 = new JoystickButton(Controller1, Constants.OI_Map.BUTTON_X.getPort());
-    ButtonY_1 = new JoystickButton(Controller1, Constants.OI_Map.BUTTON_Y.getPort());
-    
-    // CONTROLLER 2
-    if (Qnt_Controllers == 2) {
-      Controller2 = new XboxController(Constants.OI_Map.CONTROLLER_2.getPort());
-      ButtonA_2 = new JoystickButton(Controller2, Constants.OI_Map.BUTTON_A.getPort());
-      ButtonB_2 = new JoystickButton(Controller2, Constants.OI_Map.BUTTON_B.getPort());
-      ButtonX_2 = new JoystickButton(Controller2, Constants.OI_Map.BUTTON_X.getPort());
-      ButtonY_2 = new JoystickButton(Controller2, Constants.OI_Map.BUTTON_Y.getPort());
-    }
-    // JOYSTICK 1
-    joystick1 = new Joystick(0);
-  }
-  //#endregion
 
-  //#region INITIALIZER
-  /**
-   * Initializer of almost every item in the robot.
-   */
+ 
+
   public void init() {
-    // MOTORS
-    climbLeft = new WPI_VictorSPX(Constants.Motors.CLIMB_LEFT.getPortCAN());
-    climbRight = new WPI_VictorSPX(Constants.Motors.CLIMB_RIGHT.getPortCAN());
-    telescopic = new WPI_VictorSPX(Constants.Motors.CLIMB_TELESCOPIC.getPortCAN());
-    intakeMotor = new WPI_VictorSPX(Constants.Motors.COLLECTOR_INTAKE.getPortCAN());
 
     // SENSORS
     m_navx = new AHRS(SerialPort.Port.kMXP);
@@ -174,55 +120,44 @@ public class RobotContainer {
     // encoderT1.setDistancePerPulse(Math.PI * 4 * 2.54/ 360.0);
     // encoderT1.setMinRate(1.0);
     // encoderT1.setSamplesToAverage(5);
-    m_pixy = new Pixy();
-    m_pixy.initialize();
+    //m_pixy = new Pixy();
+    //m_pixy.initialize();
 
-    // SHUFFLEBOARD
   }
-  //#endregion
-
-  //#region AUTONOMOUS
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
+  
   public Command getAutonomousCommand() {
     m_navx.reset();
+    // Implementar rotina autônoma.
+    //*** */
     // An ExampleCommand will run in autonomous
     return new SequentialCommandGroup(
-      new PIDCommand(new PIDController(Constants.kP,Constants.kI,Constants.kD),
+      new PIDCommand(new PIDController(Constants.drive_kP,Constants.drive_kI,Constants.drive_kD),
         () -> m_navx.getYaw(),
         0,
         output -> m_DriveTrain.arcadeDrive(0.0, output),
         m_DriveTrain)
     );
   }
-  //#endregion
 
-  //#region CALL BINDERS
+
   public void callBinders() {
-    // EXECUTE EVERY PULSE
+
     m_DriveTrain.setDefaultCommand(new RunCommand(() -> {
-      /*
-      Block b = m_pixy.getBiggestBlock();
-      if (b != null) {
-        double d = (b.getX() / 360.0), a = (b.getHeight() * b.getWidth()) / 10000.0;
-        m_DriveTrain.arcadeDrive(1.0 - a, d < 0.5 ? (d > -0.5 ? -0.6 : d) : d);
-        System.out.println(1.0 - a);
-      } else {
-      */
-        m_DriveTrain.arcadeDrive(-Controller1.getY(GenericHID.Hand.kLeft), Controller1.getX(GenericHID.Hand.kRight));
-        //m_DriveTrain.arcadeDrive(-joystick1.getY(), joystick1.getZ());
+
+      m_DriveTrain.arcadeDrive(-pilot.getY(GenericHID.Hand.kLeft), pilot.getX(GenericHID.Hand.kRight));
+
     }, m_DriveTrain));
 
-    m_Storage.setDefaultCommand(new RunCommand(() -> {
-      if(!m_Storage.isCorrect()) {
-        m_Storage.move(-0.5);
-      } else {
-        m_Storage.move(0.0);
-      }
-    },m_Storage));
+    m_Climb.setDefaultCommand(new RunCommand(()->{
+
+      final double delta = COpilot.getTriggerAxis(Hand.kRight) - COpilot.getTriggerAxis(Hand.kLeft);
+
+      if(delta > 0.1) m_Climb.raiseTelescopic();
+      else if (delta < -0.1) m_Climb.lowerTelescopic();
+      else m_Climb.stopTelescopic();
+
+    }, m_Climb));
+
+    m_Storage.setDefaultCommand(new ControlStorage(m_Storage));
   }
-  //#endregion
 }

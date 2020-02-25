@@ -25,7 +25,7 @@ public class Turn extends PIDCommand {
   public Turn(Drivetrain dt, double setpoint, AHRS navX) {
     super(
         // The controller that the command will use
-        new PIDController(Constants.kP, Constants.kI, Constants.kD),
+        new PIDController(Constants.drive_kP, Constants.drive_kI, Constants.drive_kD),
         // This should return the measurement
         () -> {
           return navX.getAngle();

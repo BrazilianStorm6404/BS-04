@@ -14,8 +14,8 @@ import frc.robot.Constants;
 
 public class Climb extends SubsystemBase {
   
-  public Spark leftClimb, rightClimb, telescopic;
-  public SpeedControllerGroup climb;
+  private Spark leftClimb, rightClimb, telescopic;
+  private SpeedControllerGroup climb;
 
   public Climb() {
     telescopic = new Spark(Constants.Ports.Motors.CLIMB_TELESCOPIC);
@@ -37,9 +37,18 @@ public class Climb extends SubsystemBase {
   public void lowerTelescopic(){
     telescopic.set(-Constants.telescopic_speed);
   }
+
+  public void stopTelescopic() {
+    telescopic.setSpeed(0.0);
+  }
   
   public void climb (){
     climb.set(Constants.climb_speed);
+  }  
+  
+  public void stopClimb (){
+    climb.set(0);
   }
   
+
 }

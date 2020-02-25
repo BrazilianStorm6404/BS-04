@@ -19,25 +19,25 @@ import frc.robot.Constants;
 
 public class Drivetrain extends PIDSubsystem {
 
-  private WPI_VictorSPX leftFront, leftBack, rightFront, rightBack;
-  private SpeedControllerGroup left, right;
-  private final DifferentialDrive m_drive;
-  private AHRS navX;
+  private WPI_VictorSPX _leftFront, _leftBack, _rightFront, _rightBack;
+  private SpeedControllerGroup _left, _right;
+  private DifferentialDrive m_drive;
+  private AHRS _navX;
 
   public Drivetrain(AHRS navX) {
-    super(new PIDController(Constants.kP, Constants.kI, Constants.kD));
+    super(new PIDController(Constants.drive_kP, Constants.drive_kI, Constants.drive_kD));
 
-    this.navX = navX;
+    this._navX = navX;
 
-    leftFront = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_LEFT_FRONT);
-    leftBack = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_LEFT_BACK);
-    rightFront = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_RIGHT_FRONT);
-    rightBack = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_RIGHT_BACK);
+    _leftFront = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_LEFT_FRONT);
+    _leftBack = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_LEFT_BACK);
+    _rightFront = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_RIGHT_FRONT);
+    _rightBack = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_RIGHT_BACK);
 
-    left = new SpeedControllerGroup(leftFront, leftBack);
-    right = new SpeedControllerGroup(rightFront, rightBack);
+    _left = new SpeedControllerGroup(_leftFront, _leftBack);
+    _right = new SpeedControllerGroup(_rightFront, _rightBack);
 
-    m_drive = new DifferentialDrive(left, right);
+    m_drive = new DifferentialDrive(_left, _right);
   }
 
   @Override
@@ -61,6 +61,6 @@ public class Drivetrain extends PIDSubsystem {
 
   @Override
   protected double getMeasurement() {
-    return navX.getYaw();
+    return _navX.getYaw();
   }
 }

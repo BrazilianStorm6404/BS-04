@@ -24,7 +24,7 @@ public class Straight extends PIDCommand {
    */
   public Straight(AHRS navX, Drivetrain drivetrain, double setpoint) {
     super(
-        new PIDController(Constants.kP, Constants.kI, Constants.kD),
+        new PIDController(Constants.drive_kP, Constants.drive_kI, Constants.drive_kD),
         () -> {
           return navX.getAngle();
         },

@@ -13,41 +13,46 @@ public final class Constants {
     public  static final double telescopic_speed = 1;
     public static final double shooting_speed = 1;
     public static final double intake_speed = 0.7;
+    public static final double shooter_belt_speed = 1;
+    public static final double storage_belt_max_speed = 0.8;
     
     
     //PID
-    public static final double kP = 0.03, kI = 0.00003, kD = 0.006;
+    public static final double drive_kP = 0.03, drive_kI = 0.00003, drive_kD = 0.006;
+
+    public static final double shooter_kP = 0, shooter_kI=0, shooter_kD = 0;
+
     
     public static class Ports{
         
         public static class Sensors {
             
-            public static final int STORAGE_IR = 0; //VERIFICAR
-            public static final int COLLECTOR_LIMIT = 0;
-            public static final int STORAGE_ULTRASONIC_PING = 0; //***
-            public static final int STORAGE_ULTRASONIC_ECHO = 0;
-            public static final int SHOOTER_LIMIT_HIGH = 0;
-            public static final int DRIVE_ENC_LEFT_A = 1;
-            public static final int DRIVE_ENC_LEFT_B = 2;
-            public static final int DRIVE_ENC_RIGTH_A = 3;
-            public static final int DRIVE_ENC_RIGTH_B = 4;
+            public static final int STORAGE_ULTRASONIC_PING = 0; 
+            public static final int STORAGE_ULTRASONIC_ECHO = 1;
+            public static final int SHOOTER_LIMIT_LOW = 7;
+            public static final int SHOOTER_LIMIT_HIGH = 8;
+            public static final int STORAGE_OPTIC = 9; 
+            public static final int DRIVE_ENC_LEFT_A = 0;
+            public static final int DRIVE_ENC_LEFT_B = 1;
+            public static final int DRIVE_ENC_RIGTH_A = 2;
+            public static final int DRIVE_ENC_RIGTH_B = 3;
 
         }
 
         public static class Motors{
             
-            public static final int DRIVE_LEFT_FRONT = 10;
-            public static final int DRIVE_LEFT_BACK = 20;
-            public static final int DRIVE_RIGHT_FRONT = 30;
-            public static final int DRIVE_RIGHT_BACK = 40;
+            public static final int DRIVE_LEFT_FRONT = 1;
+            public static final int DRIVE_LEFT_BACK = 2;
+            public static final int DRIVE_RIGHT_FRONT = 3;
+            public static final int DRIVE_RIGHT_BACK = 4;
 
-            public static final int SHOOTER_ANGLE = 9; //VERIFICAR
-            public static final int SHOOTER_BELT = 00000000000000; //***
-            public static final int SHOOTER_SHOOT = 80;
+            public static final int SHOOTER_ANGLE = 0;
+            public static final int SHOOTER_BELT = 9;
+            public static final int SHOOTER_SHOOT = 11;
 
-            public static final int COLLECTOR_JOINT = 50;
-            public static final int COLLECTOR_INTAKE = 60;
-            public static final int STORAGE_BELT = 70;
+            public static final int COLLECTOR_JOINT = 8;
+            public static final int COLLECTOR_INTAKE = 9;
+            public static final int STORAGE_BELT = 10;
 
             public static final int CLIMB_RIGHT = 2;
             public static final int CLIMB_LEFT = 3;
@@ -58,15 +63,16 @@ public final class Constants {
     
     public static class OI_Map {
 
-        public static final int CONTROLLER_1 = 0;
-        public static final int CONTROLLER_2 = 1; 
+        public static final int PILOT = 0;
+        public static final int COPILOT = 1; 
+
         public static final int BUTTON_A = 1; 
         public static final int BUTTON_B = 2;
         public static final int BUTTON_X = 3;
         public static final int BUTTON_Y = 4;
-        public static final int X_AXIS = 4;
-        public static final int Y_AXIS = 5;
-
+        public static final int BUTTON_LEFT = 5;
+        public static final int BUTTON_RIGHT = 6;
+        
     }
     
     public static class Autonomous{
