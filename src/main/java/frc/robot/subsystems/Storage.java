@@ -8,21 +8,18 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.libs.sensorsIMPL.Pixy;
+import frc.robot.libs.sensorsimpl.Pixy;
 
 public class Storage extends SubsystemBase {
 
-  private VictorSPX belt, joint, intake;
+  private WPI_VictorSPX belt, joint;
 
-
-  private DigitalInput IR_Internal;
-  private Ultrasonic ultrasonic;
+  private DigitalInput IR_intake_detector,IR_intake_verifier;
   private Pixy pixy;
 
   public boolean[] balls =  {false, false, false, false, false};
@@ -30,14 +27,11 @@ public class Storage extends SubsystemBase {
   public Storage() {
     pixy = new Pixy();
 
-    belt = new VictorSPX(Constants.Ports.Motors.STORAGE_BELT);
-    joint = new VictorSPX(Constants.Ports.Motors.COLLECTOR_JOINT);
-    intake = new VictorSPX(Constants.Ports.Motors.COLLECTOR_INTAKE);
+    belt = new WPI_VictorSPX(Constants.Ports.Motors.STORAGE_BELT);
+    joint = new WPI_VictorSPX(Constants.Ports.Motors.COLLECTOR_JOINT);
 
-    IR_Internal = new DigitalInput(Constants.Ports.Sensors.STORAGE_OPTIC);
-    ultrasonic = new  Ultrasonic(Constants.Ports.Sensors.STORAGE_ULTRASONIC_PING,
-                                 Constants.Ports.Sensors.STORAGE_ULTRASONIC_ECHO);
-
+    IR_intake_detector = new DigitalInput(Constants.Ports.Sensors.STORAGE_OPTIC);
+    IR_intake_verifier = new DigitalInput(Constants.Ports.Sensors.INTAKE_OPTIC);
   }
 
   @Override
@@ -53,29 +47,12 @@ public class Storage extends SubsystemBase {
     joint.set(ControlMode.PercentOutput, speed);
   }
 
-  public void pullPowerCell(){
-    intake.set(ControlMode.PercentOutput, Constants.intake_speed);
+  public boolean getIRDetectorValue(){
+    return IR_intake_detector.get();
   }
 
-  public void stopPowerCell(){
-    intake.set(ControlMode.PercentOutput, 0);
-  }
-
-  public double getUltrasonicRange(){
-    return ultrasonic.getRangeMM();
-  }
-
-  public boolean getIRValue(){
-    return IR_Internal.get();
-  }
-
-  public boolean getUltrasonicBool() {
-    // Ajustar valor de verificação
-    if (ultrasonic.getRangeMM() < 100) {
-      return true;
-    } else {
-      return false;
-    }
+  public boolean getIRVerifierValue() {
+    return IR_intake_verifier.get();
   }
 
   public double getArea(){
