@@ -13,17 +13,22 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.libs.sensorsimpl.Pixy;
 
 public class Storage extends SubsystemBase {
 
-  private int powerCells = 0;
-
-  private WPI_VictorSPX belt;
+  private WPI_VictorSPX belt, joint;
 
   private DigitalInput IR_intake_detector,IR_intake_verifier;
+  private Pixy pixy;
+
+  public boolean[] balls =  {false, false, false, false, false};
 
   public Storage() {
+    pixy = new Pixy();
+
     belt = new WPI_VictorSPX(Constants.Ports.Motors.STORAGE_BELT);
+    joint = new WPI_VictorSPX(Constants.Ports.Motors.COLLECTOR_JOINT);
 
     IR_intake_detector = new DigitalInput(Constants.Ports.Sensors.STORAGE_OPTIC);
     IR_intake_verifier = new DigitalInput(Constants.Ports.Sensors.INTAKE_OPTIC);
@@ -35,7 +40,11 @@ public class Storage extends SubsystemBase {
   }
 
   public void MoveBelt(double speed){
-    belt.set(ControlMode.PercentOutput, speed * Constants.STORAGE_BELT_SPEED);
+    belt.set(ControlMode.PercentOutput, speed * Constants.storage_belt_max_speed);
+  }
+
+  public void MoveJoint(double speed){
+    joint.set(ControlMode.PercentOutput, speed);
   }
 
   public boolean getIRDetectorValue(){
@@ -46,16 +55,8 @@ public class Storage extends SubsystemBase {
     return IR_intake_verifier.get();
   }
 
-  public void addPowerCells() {
-    powerCells++;
-  }
-
-  public int getPowerCellCount() {
-    return powerCells;
-  }
-
-  public void removePowerCells() {
-    powerCells--;
+  public double getArea(){
+    return pixy.getBiggestBlock().getY() * pixy.getBiggestBlock().getX();
   }
 
 }

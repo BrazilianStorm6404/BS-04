@@ -20,8 +20,8 @@ public class Climb extends SubsystemBase {
   public Climb() {
     telescopic = new Spark(Constants.Ports.Motors.CLIMB_TELESCOPIC);
 
-    leftClimb = new Spark(Constants.Ports.Motors.CLIMB_FRONT);
-    rightClimb = new Spark(Constants.Ports.Motors.CLIMB_BACK);
+    leftClimb = new Spark(Constants.Ports.Motors.CLIMB_LEFT);
+    rightClimb = new Spark(Constants.Ports.Motors.CLIMB_RIGHT);
     climb = new SpeedControllerGroup(leftClimb, rightClimb);
   }
 
@@ -35,7 +35,7 @@ public class Climb extends SubsystemBase {
   }
   
   public void climb (){
-    climb.set(Constants.CLIMB_SPEED);
+    climb.set(Constants.climb_speed);
   }  
   
   public void stopClimb (){
