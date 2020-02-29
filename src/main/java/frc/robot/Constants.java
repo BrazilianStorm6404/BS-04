@@ -27,6 +27,8 @@ public final class Constants {
         
         public static class Sensors {
             
+            public static final int STORAGE_ULTRASONIC_PING = 0; 
+            public static final int STORAGE_ULTRASONIC_ECHO = 1;
             public static final int SHOOTER_LIMIT_LOW = 7;
             public static final int SHOOTER_LIMIT_HIGH = 8;
             public static final int STORAGE_OPTIC = 9; 
@@ -34,7 +36,6 @@ public final class Constants {
             public static final int DRIVE_ENC_LEFT_B = 1;
             public static final int DRIVE_ENC_RIGHT_A = 2;
             public static final int DRIVE_ENC_RIGHT_B = 3;
-			public static final int INTAKE_OPTIC = 6;
 
         }
 

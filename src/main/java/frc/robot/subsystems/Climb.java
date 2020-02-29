@@ -30,8 +30,16 @@ public class Climb extends SubsystemBase {
     // This method will be called once per scheduler run
   }
   
-  public void runTelescopic(double speed){
-    telescopic.set(speed);
+  public void raiseTelescopic(){
+    telescopic.set(Constants.telescopic_speed);
+  }
+
+  public void lowerTelescopic(){
+    telescopic.set(-Constants.telescopic_speed);
+  }
+
+  public void stopTelescopic() {
+    telescopic.setSpeed(0.0);
   }
   
   public void climb (){

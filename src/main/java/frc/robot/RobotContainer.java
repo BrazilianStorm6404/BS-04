@@ -7,23 +7,22 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.ActivateShooter;
 import frc.robot.commands.ControlStorage;
-import frc.robot.commands.Shoot;
-import frc.robot.commands.ShooterAlign;
+import frc.robot.libs.sensorsIMPL.Pixy;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
@@ -32,7 +31,6 @@ import frc.robot.subsystems.Storage;
   
 public class RobotContainer {
 
-  //#region INSTANCES
   private XboxController pilot, COpilot;
 
   // BUTTONS CONTROLLER 1
@@ -43,9 +41,10 @@ public class RobotContainer {
 
   // SENSORS
   private AHRS m_navx;
+  private Pixy m_pixy;
 
-  // MOTORS
-  private WPI_VictorSPX intake;
+  //This must be refactored
+  //private Encoder_AMT103 encoderT1;
 
   // SUBSYSTEMS
   private final Climb m_Climb = new Climb();
@@ -56,7 +55,6 @@ public class RobotContainer {
 
   // COMMANDS
 
-  //#endregion
 
   //#region CONSTRUCTOR
   /**
@@ -69,8 +67,9 @@ public class RobotContainer {
   }
   //#endregion
 
-  //#region SET CONTROLLERS
+
   public void setControllers() {
+
     pilot = new XboxController(Constants.OI_Map.PILOT);
     pilot_RB = new JoystickButton(pilot, Constants.OI_Map.BUTTON_RIGHT);
     pilot_ButtonA = new JoystickButton(pilot, Constants.OI_Map.BUTTON_A);
@@ -78,8 +77,8 @@ public class RobotContainer {
     COpilot = new XboxController(Constants.OI_Map.COPILOT);
     CO_ButtonX = new JoystickButton(COpilot, Constants.OI_Map.BUTTON_X);
     CO_ButtonB = new JoystickButton(COpilot, Constants.OI_Map.BUTTON_B);
+
     }
-  //#endregion
 
   //#region BUTTON BINDINGS
   /**
@@ -90,14 +89,11 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    // BUTTON X OF COPILOT = INTAKE
-    CO_ButtonX.whenPressed(()-> intake.set(0.0), m_Storage)
-      .whenReleased(() -> intake.set(Constants.intake_speed), m_Storage);
+    CO_ButtonX.whenPressed(()-> m_Storage.pullPowerCell(), m_Storage)
+      .whenReleased(() -> m_Storage.stopPowerCell(), m_Storage);
 
-    // BUTTON A OF PILOT = TURN
     pilot_ButtonA.whileHeld(() -> m_DriveTrain.arcadeDrive(0, 1), m_DriveTrain);
 
-    // BUTTON B OF COPILOT = CLIMB
     CO_ButtonB.whileHeld(()-> {
       if(-COpilot.getY(GenericHID.Hand.kLeft) > 0.2){
         m_Climb.climb();
@@ -106,28 +102,29 @@ public class RobotContainer {
     }, m_Climb)
     .whenReleased(()-> m_Climb.stopClimb(), m_Climb);
 
-    // BUTTON X OF COPILOT = SHOOTER
-    pilot_RB.whenPressed(new SequentialCommandGroup(new ShooterAlign(m_Shooter), 
-      new Shoot(m_Shooter, m_Storage, m_PDP)));
+    pilot_RB.whenPressed(new ActivateShooter(m_Shooter, m_Storage, m_PDP));
 
   }
-  //#endregion 
+  //#endregion
 
-  //#region INIT
+
+ 
+
   public void init() {
-    // MOTORS
-    intake = new WPI_VictorSPX(Constants.Ports.Motors.COLLECTOR_INTAKE);
 
     // SENSORS
     m_navx = new AHRS(SerialPort.Port.kMXP);
+    
     m_PDP  = new PowerDistributionPanel(0);
+
+
   }
-  //#endregion
   
-  //#region AUTONOMOUS
   public Command getAutonomousCommand() {
     m_navx.reset();
-
+    // Implementar rotina autônoma.
+    //*** */
+    // An ExampleCommand will run in autonomous
     return new SequentialCommandGroup(
       new PIDCommand(new PIDController(Constants.drive_kP,Constants.drive_kI,Constants.drive_kD),
         () -> m_navx.getYaw(),
@@ -136,19 +133,26 @@ public class RobotContainer {
         m_DriveTrain)
     );
   }
-  //#endregion
 
-  //#region CALL BINDERS
+
   public void callBinders() {
 
-    m_DriveTrain.setDefaultCommand(new RunCommand(() -> m_DriveTrain.arcadeDrive(-pilot.getY(GenericHID.Hand.kLeft), 
-      pilot.getX(GenericHID.Hand.kRight)), m_DriveTrain));
+    m_DriveTrain.setDefaultCommand(new RunCommand(() -> {
 
-    m_Climb.setDefaultCommand(new RunCommand(()->
-      m_Climb.runTelescopic((COpilot.getTriggerAxis(Hand.kRight) 
-      - COpilot.getTriggerAxis(Hand.kLeft))), m_Climb));
+      m_DriveTrain.arcadeDrive(-pilot.getY(GenericHID.Hand.kLeft), pilot.getX(GenericHID.Hand.kRight));
+
+    }, m_DriveTrain));
+
+    m_Climb.setDefaultCommand(new RunCommand(()->{
+
+      final double delta = COpilot.getTriggerAxis(Hand.kRight) - COpilot.getTriggerAxis(Hand.kLeft);
+
+      if(delta > 0.1) m_Climb.raiseTelescopic();
+      else if (delta < -0.1) m_Climb.lowerTelescopic();
+      else m_Climb.stopTelescopic();
+
+    }, m_Climb));
 
     m_Storage.setDefaultCommand(new ControlStorage(m_Storage));
   }
-  //#endregion
 }
