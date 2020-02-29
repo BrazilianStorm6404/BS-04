@@ -20,10 +20,10 @@ import frc.robot.Constants;
 
 public class Drivetrain extends PIDSubsystem {
 
-  private WPI_VictorSPX _leftFront, _leftBack, _rightFront, _rightBack;
-  private SpeedControllerGroup _left, _right;
+  private WPI_VictorSPX leftFront, leftBack, rightFront, rightBack;
+  private SpeedControllerGroup left, right;
   private DifferentialDrive m_drive;
-  private AHRS _navX;
+  private AHRS m_navX;
   //ENCODERS
   //***
   Encoder encoderLeft, encoderRight;
@@ -31,7 +31,7 @@ public class Drivetrain extends PIDSubsystem {
   public Drivetrain(AHRS navX) {
     super(new PIDController(Constants.drive_kP, Constants.drive_kI, Constants.drive_kD));
 
-    this._navX = navX;
+    m_navX = navX;
 
     encoderLeft = new Encoder(Constants.Ports.Sensors.DRIVE_ENC_LEFT_A, Constants.Ports.Sensors.DRIVE_ENC_LEFT_B, false);
     encoderLeft.setDistancePerPulse(Math.PI * 4 * 2.54 / 360.0);
@@ -43,15 +43,15 @@ public class Drivetrain extends PIDSubsystem {
     encoderRight.setMinRate(1.0);
     encoderRight.setSamplesToAverage(5);
 
-    _leftFront = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_LEFT_FRONT);
-    _leftBack = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_LEFT_BACK);
-    _rightFront = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_RIGHT_FRONT);
-    _rightBack = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_RIGHT_BACK);
+    leftFront = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_LEFT_FRONT);
+    leftBack = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_LEFT_BACK);
+    rightFront = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_RIGHT_FRONT);
+    rightBack = new WPI_VictorSPX(Constants.Ports.Motors.DRIVE_RIGHT_BACK);
 
-    _left = new SpeedControllerGroup(_leftFront, _leftBack);
-    _right = new SpeedControllerGroup(_rightFront, _rightBack);
+    left = new SpeedControllerGroup(leftFront, leftBack);
+    right = new SpeedControllerGroup(rightFront, rightBack);
 
-    m_drive = new DifferentialDrive(_left, _right);
+    m_drive = new DifferentialDrive(left, right);
   }
 
   @Override
@@ -75,6 +75,6 @@ public class Drivetrain extends PIDSubsystem {
 
   @Override
   protected double getMeasurement() {
-    return _navX.getYaw();
+    return m_navX.getYaw();
   }
 }

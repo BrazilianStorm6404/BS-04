@@ -48,10 +48,10 @@ public class RobotContainer {
   private WPI_VictorSPX intake;
 
   // SUBSYSTEMS
-  private final Climb m_Climb = new Climb();
-  private final Drivetrain m_DriveTrain = new Drivetrain( m_navx);
-  private final Shooter m_Shooter = new Shooter();
-  private final Storage m_Storage = new Storage();
+  private Climb m_Climb;
+  private Drivetrain m_DriveTrain;
+  private Shooter m_Shooter;
+  private Storage m_Storage;
   private PowerDistributionPanel m_PDP;
 
   // COMMANDS
@@ -63,9 +63,9 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    init();
     setControllers();
     configureButtonBindings();
-    init();
   }
   //#endregion
 
@@ -92,7 +92,7 @@ public class RobotContainer {
 
     // BUTTON X OF COPILOT = INTAKE
     CO_ButtonX.whenPressed(()-> intake.set(0.0), m_Storage)
-      .whenReleased(() -> intake.set(Constants.intake_speed), m_Storage);
+      .whenReleased(() -> intake.set(Constants.INTAKE_SPEED), m_Storage);
 
     // BUTTON A OF PILOT = TURN
     pilot_ButtonA.whileHeld(() -> m_DriveTrain.arcadeDrive(0, 1), m_DriveTrain);
@@ -116,11 +116,17 @@ public class RobotContainer {
   //#region INIT
   public void init() {
     // MOTORS
-    intake = new WPI_VictorSPX(Constants.Ports.Motors.COLLECTOR_INTAKE);
+    intake = new WPI_VictorSPX(Constants.Ports.Motors.INTAKE_COLLECTOR);
 
     // SENSORS
     m_navx = new AHRS(SerialPort.Port.kMXP);
     m_PDP  = new PowerDistributionPanel(0);
+
+    // SUBSYSTEMS
+    m_Storage = new Storage();
+    m_Shooter= new Shooter();
+    m_Climb = new Climb();
+    m_DriveTrain = new Drivetrain(m_navx);
   }
   //#endregion
   
