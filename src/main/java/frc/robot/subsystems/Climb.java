@@ -31,11 +31,11 @@ public class Climb extends SubsystemBase {
   }
   
   public void raiseTelescopic(){
-    telescopic.set(Constants.telescopic_speed);
+    telescopic.set(Constants.TELESCOPIC_SPEED);
   }
 
   public void lowerTelescopic(){
-    telescopic.set(-Constants.telescopic_speed);
+    telescopic.set(-Constants.TELESCOPIC_SPEED);
   }
 
   public void stopTelescopic() {
@@ -43,7 +43,7 @@ public class Climb extends SubsystemBase {
   }
   
   public void climb (){
-    climb.set(Constants.climb_speed);
+    climb.set(Constants.CLIMB_SPEED);
   }  
   
   public void stopClimb (){

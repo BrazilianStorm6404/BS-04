@@ -29,7 +29,7 @@ public class Drivetrain extends PIDSubsystem {
   Encoder encoderLeft, encoderRight;
 
   public Drivetrain(AHRS navX) {
-    super(new PIDController(Constants.drive_kP, Constants.drive_kI, Constants.drive_kD));
+    super(new PIDController(Constants.DRIVE_kP, Constants.DRIVE_kI, Constants.DRIVE_kD));
 
     this._navX = navX;
 

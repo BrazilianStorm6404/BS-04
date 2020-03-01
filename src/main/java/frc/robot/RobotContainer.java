@@ -107,9 +107,6 @@ public class RobotContainer {
   }
   //#endregion
 
-
- 
-
   public void init() {
 
     // SENSORS
@@ -126,7 +123,7 @@ public class RobotContainer {
     //*** */
     // An ExampleCommand will run in autonomous
     return new SequentialCommandGroup(
-      new PIDCommand(new PIDController(Constants.drive_kP,Constants.drive_kI,Constants.drive_kD),
+      new PIDCommand(new PIDController(Constants.DRIVE_kP,Constants.DRIVE_kI,Constants.DRIVE_kD),
         () -> m_navx.getYaw(),
         0,
         output -> m_DriveTrain.arcadeDrive(0.0, output),

@@ -45,8 +45,8 @@ public class Shooter extends SubsystemBase {
 	}
 
 	public void Shoot() {
-		shoot.set(ControlMode.PercentOutput, Constants.shooting_speed);
-		belt.set(Constants.shooter_belt_speed);
+		shoot.set(ControlMode.PercentOutput, Constants.SHOOTING_SPEED);
+		belt.set(Constants.SHOOTER_BELT_SPEED);
 	}
 
 	public void Move(double speed) {

@@ -15,10 +15,10 @@ public class ControlStorage extends CommandBase {
 	private Storage _storage;
 	int i = 0;
 
-	boolean ultra = false;
-	boolean op = false;
-	boolean lastUltra = false;
-	boolean lastOp = false;
+	boolean s0 = false;
+	boolean s1 = false;
+	boolean lastS0 = false;
+	boolean lastS1 = false;
 	boolean pulling = false;
 	boolean considerGap = false;
 
@@ -36,13 +36,13 @@ public class ControlStorage extends CommandBase {
 	// Called every time the scheduler runs while the command is scheduled.
 	@Override
 	public void execute() {
-		ultra = _storage.getUltrasonicBool();
-		op = _storage.getIRValue();
+		s0 = _storage.getOPS0();
+		s1 = _storage.getOPS1();
 
-		if (ultra) {
+		if (s0) {
 			pulling = true;
 			if (_storage.balls[1] == false) {
-				if (op) {
+				if (s1) {
 					_storage.MoveBelt(0);
 					_storage.balls[i] = true;
 					i++;
@@ -55,7 +55,7 @@ public class ControlStorage extends CommandBase {
 		} else {
 			pulling = false;
 			if (considerGap) {
-				if (op && (!lastOp)) {
+				if (s0 && (!lastS0)) {
 					_storage.MoveBelt(0);
 					_storage.balls[i] = true;
 					i++;
@@ -65,8 +65,8 @@ public class ControlStorage extends CommandBase {
 			}
 		}
 
-		lastUltra = _storage.getUltrasonicBool();
-		lastOp = _storage.getIRValue();
+		lastS0 = _storage.getOPS0();
+		lastS1 = _storage.getOPS1();
 	}
 
 	// Called once the command ends or is interrupted.

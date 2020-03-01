@@ -20,7 +20,7 @@ public class ShooterAlign extends PIDCommand {
 	public ShooterAlign(Shooter m_Shooter) {
 		super(
 			// The controller that the command will use
-			new PIDController(Constants.shooter_kP, Constants.shooter_kI, Constants.shooter_kD),
+			new PIDController(Constants.SHOOTER_kP, Constants.SHOOTER_kI, Constants.SHOOTER_kD),
 			// This should return the measurement
 			() -> m_Shooter.getGyroAngle(),
 			// This should return the setpoint (can also be a constant)

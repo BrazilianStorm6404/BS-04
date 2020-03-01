@@ -9,29 +9,28 @@ package frc.robot;
 
 public final class Constants {
 
-    public static final double climb_speed = 1;
-    public  static final double telescopic_speed = 1;
-    public static final double shooting_speed = 1;
-    public static final double intake_speed = 0.7;
-    public static final double shooter_belt_speed = 1;
-    public static final double storage_belt_max_speed = 0.8;
+    public static final double CLIMB_SPEED = 1;
+    public  static final double TELESCOPIC_SPEED = 1;
+    public static final double SHOOTING_SPEED = 1;
+    public static final double INTAKE_SPEED = 0.7;
+    public static final double SHOOTER_BELT_SPEED = 1;
+    public static final double STORAGE_BELT_MAX_SPEED = 0.8;
     
     
     //PID
-    public static final double drive_kP = 0.03, drive_kI = 0.00003, drive_kD = 0.006;
+    public static final double DRIVE_kP = 0.03, DRIVE_kI = 0.00003, DRIVE_kD = 0.006;
 
-    public static final double shooter_kP = 0, shooter_kI=0, shooter_kD = 0;
+    public static final double SHOOTER_kP = 0, SHOOTER_kI=0, SHOOTER_kD = 0;
 
     
     public static class Ports{
         
         public static class Sensors {
             
-            public static final int STORAGE_ULTRASONIC_PING = 0; 
-            public static final int STORAGE_ULTRASONIC_ECHO = 1;
-            public static final int SHOOTER_LIMIT_LOW = 7;
-            public static final int SHOOTER_LIMIT_HIGH = 8;
-            public static final int STORAGE_OPTIC = 9; 
+            public static final int STORAGE_OPTIC_S1 = 9;
+            public static final int STORAGE_OPTIC_S0 = 8; 
+            public static final int SHOOTER_LIMIT_HIGH = 7;
+            public static final int SHOOTER_LIMIT_LOW = 6;
             public static final int DRIVE_ENC_LEFT_A = 0;
             public static final int DRIVE_ENC_LEFT_B = 1;
             public static final int DRIVE_ENC_RIGHT_A = 2;
@@ -78,7 +77,7 @@ public final class Constants {
     public static class Autonomous{
         
         // DISTANCE TO SHOT
-        public static final double minDistToShot = 0, maxDistToShot = 0;
+        public static final double MIN_DIST_TO_SHOOT = 0, MAX_DIST_TO_SHOOT = 0;
         
         
         // Constantes provindas do FRC-Characterization

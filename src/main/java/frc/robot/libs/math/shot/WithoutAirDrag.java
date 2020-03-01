@@ -13,13 +13,13 @@ import frc.robot.Constants;
  * Used to validate the distance to launch
  */
 public class WithoutAirDrag {
-    private boolean getPosibilite(double distanceToTry){
-        return (distanceToTry >= Constants.Autonomous.minDistToShot 
-                && distanceToTry <= Constants.Autonomous.maxDistToShot);
+    private boolean getPossibility(double distanceToTry){
+        return (distanceToTry >= Constants.Autonomous.MIN_DIST_TO_SHOOT 
+                && distanceToTry <= Constants.Autonomous.MAX_DIST_TO_SHOOT);
     }
     
     public Double getAngleToPitch(double distanceToTry){
-        if(getPosibilite(distanceToTry))
+        if(getPossibility(distanceToTry))
             return null;
         else{
             return 0.0;//Coloca a funcao dps
