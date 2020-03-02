@@ -10,11 +10,13 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants;
 
@@ -25,9 +27,12 @@ public class Drivetrain extends PIDSubsystem {
   private DifferentialDrive m_drive;
   private AHRS _navX;
   //ENCODERS
-  //***
   Encoder encoderLeft, encoderRight;
 
+  //SHUFFLEBOARD
+  private ShuffleboardTab drivetrainTab;
+  private NetworkTableEntry encoderLeftEntry, encoderRightEntry;
+  
   public Drivetrain(AHRS navX) {
     super(new PIDController(Constants.DRIVE_kP, Constants.DRIVE_kI, Constants.DRIVE_kD));
 
@@ -52,11 +57,25 @@ public class Drivetrain extends PIDSubsystem {
     _right = new SpeedControllerGroup(_rightFront, _rightBack);
 
     m_drive = new DifferentialDrive(_left, _right);
+
+    drivetrainTab = Shuffleboard.getTab("Tração");
+    encoderLeftEntry = drivetrainTab.add("Encoder Esquerdo", 0.0).getEntry();
+    encoderRightEntry = drivetrainTab.add("Encoder Direito", 0.0).getEntry();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    encoderLeftEntry.forceSetDouble(this.getEncoderLeft());
+    encoderRightEntry.forceSetDouble(this.getEncoderRight());
+  }
+
+  public double getEncoderRight() {
+    return encoderRight.getDistance();
+  }
+
+  public double getEncoderLeft() {
+    return encoderLeft.getDistance();
   }
 
   public void arcadeDrive(double fwd, double rot) {

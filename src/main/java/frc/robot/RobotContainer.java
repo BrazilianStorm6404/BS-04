@@ -136,8 +136,8 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
     return new SequentialCommandGroup(
       new PIDCommand(new PIDController(Constants.DRIVE_kP,Constants.DRIVE_kI,Constants.DRIVE_kD),
-        () -> m_navx.getYaw(),
-        0,
+        () -> m_DriveTrain.getEncoderLeft(),
+        0.3,
         output -> m_DriveTrain.arcadeDrive(0.0, output),
         m_DriveTrain)
     );

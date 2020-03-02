@@ -28,11 +28,12 @@ public class Storage extends SubsystemBase {
   // S0's the first position in storage.
   // S1's the second position in storage.
   private DigitalInput OP_S0, OP_S1;
-  // private Pixy pixy;
+  private Pixy pixy;
 
   public boolean[] balls =  {false, false, false, false, false};
 
   public Storage() {
+    pixy = new Pixy();
     belt = new VictorSPX(Constants.Ports.Motors.STORAGE_BELT);
     joint = new VictorSPX(Constants.Ports.Motors.COLLECTOR_JOINT);
     intake = new VictorSPX(Constants.Ports.Motors.COLLECTOR_INTAKE);
@@ -62,6 +63,12 @@ public class Storage extends SubsystemBase {
     entryB3.setBoolean(balls[2]);
     entryB4.setBoolean(balls[3]);
     entryB5.setBoolean(balls[4]);
+
+    if (this.getBallArea() > Constants.STORAGE_MIN_PIXY_AREA) {
+      this.pullPowerCell();
+    } else {
+      this.stopPowerCell();
+    }
   }
 
   public void MoveBelt(){
@@ -92,4 +99,7 @@ public class Storage extends SubsystemBase {
     return !OP_S1.get();
   }
 
+  public double getBallArea() {
+    return pixy.getBiggestBlock().getX() * pixy.getBiggestBlock().getY();
+  }
 }
