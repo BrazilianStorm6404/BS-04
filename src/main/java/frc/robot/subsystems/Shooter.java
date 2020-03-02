@@ -34,7 +34,7 @@ public class Shooter extends SubsystemBase {
 		gyro = new ADXRS450_Gyro();
 		limitHigh = new DigitalInput(Constants.Ports.Sensors.SHOOTER_LIMIT_HIGH);
 		limitLow = new DigitalInput(Constants.Ports.Sensors.SHOOTER_LIMIT_LOW);
-
+		belt.setInverted(true);
 	}
 
 	@Override
@@ -49,13 +49,32 @@ public class Shooter extends SubsystemBase {
 		belt.set(Constants.SHOOTER_BELT_SPEED);
 	}
 
-	public void Move(double speed) {
-		if (speed > 0 && limitHigh.get())
-			speed = 0;
-		if (speed < 0 && limitLow.get())
-			speed = 0;
+	public void moveUp() {
+		double speed = Constants.SHOOTER_ANGLE_SPEED;
 
 		angle.set(speed);
+	}
+
+	public void moveDown() {
+		double speed = Constants.SHOOTER_ANGLE_SPEED * -1;
+
+		angle.set(speed);
+	}
+
+	public void stopMoving() {
+		angle.set(0);
+	}
+	
+	public void stopShooting() {
+		shoot.set(ControlMode.PercentOutput, 0);
+	}
+
+	public void stopBelt() {
+		belt.set(0);
+	}
+
+	public void moveBelt() {
+		belt.set(Constants.SHOOTER_BELT_SPEED);
 	}
 
 	public double getGyroAngle() {

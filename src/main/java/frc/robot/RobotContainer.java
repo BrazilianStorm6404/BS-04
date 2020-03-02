@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ActivateShooter;
 import frc.robot.commands.ControlStorage;
+import frc.robot.commands.Shoot;
 import frc.robot.libs.sensorsIMPL.Pixy;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Drivetrain;
@@ -54,6 +55,8 @@ public class RobotContainer {
   private PowerDistributionPanel m_PDP;
 
   // COMMANDS
+
+  // SHUFFLEBOARD
 
 
   //#region CONSTRUCTOR
@@ -102,7 +105,14 @@ public class RobotContainer {
     }, m_Climb)
     .whenReleased(()-> m_Climb.stopClimb(), m_Climb);
 
-    pilot_RB.whenPressed(new ActivateShooter(m_Shooter, m_Storage, m_PDP));
+    pilot_RB.whileHeld(new Shoot(m_Shooter, m_Storage, m_PDP))
+    .whenReleased(new RunCommand(()->{
+
+      m_Shooter.stopShooting();
+      m_Shooter.stopBelt();
+      m_Storage.MoveBelt(0);
+
+    }, m_Shooter, m_Storage));
 
   }
   //#endregion
@@ -110,11 +120,9 @@ public class RobotContainer {
   public void init() {
 
     // SENSORS
-    m_navx = new AHRS(SerialPort.Port.kMXP);
+    m_navx = new AHRS(SerialPort.Port.kUSB);
     
     m_PDP  = new PowerDistributionPanel(0);
-
-
   }
   
   public Command getAutonomousCommand() {
@@ -136,19 +144,30 @@ public class RobotContainer {
 
     m_DriveTrain.setDefaultCommand(new RunCommand(() -> {
 
-      m_DriveTrain.arcadeDrive(-pilot.getY(GenericHID.Hand.kLeft), pilot.getX(GenericHID.Hand.kRight));
+      m_DriveTrain.arcadeDrive(pilot.getY(GenericHID.Hand.kLeft), pilot.getX(GenericHID.Hand.kRight));
 
     }, m_DriveTrain));
 
     m_Climb.setDefaultCommand(new RunCommand(()->{
 
-      final double delta = COpilot.getTriggerAxis(Hand.kRight) - COpilot.getTriggerAxis(Hand.kLeft);
-
-      if(delta > 0.1) m_Climb.raiseTelescopic();
-      else if (delta < -0.1) m_Climb.lowerTelescopic();
-      else m_Climb.stopTelescopic();
+      double delta = COpilot.getTriggerAxis(Hand.kRight) - COpilot.getTriggerAxis(Hand.kLeft);
+      if (delta > 0.1) {
+        m_Climb.setTelescopic(delta * Constants.TELESCOPIC_SPEED_RAISE);  
+      } else {
+        m_Climb.setTelescopic(delta * Constants.TELESCOPIC_SPEED_LOWER);
+      }
 
     }, m_Climb));
+
+    m_Shooter.setDefaultCommand(new RunCommand(()->{
+
+      final double delta = pilot.getTriggerAxis(Hand.kRight) - pilot.getTriggerAxis(Hand.kLeft);
+
+      if(delta > 0.1) m_Shooter.moveUp();
+      else if (delta < -0.1) m_Shooter.moveDown();
+      else m_Shooter.stopMoving();
+
+    }, m_Shooter));
 
     m_Storage.setDefaultCommand(new ControlStorage(m_Storage));
   }

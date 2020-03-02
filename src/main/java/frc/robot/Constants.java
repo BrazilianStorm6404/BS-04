@@ -9,10 +9,12 @@ package frc.robot;
 
 public final class Constants {
 
+    public static final double SHOOTER_ANGLE_SPEED = 0.5;
     public static final double CLIMB_SPEED = 1;
-    public  static final double TELESCOPIC_SPEED = 1;
+    public static final double TELESCOPIC_SPEED_RAISE = 0.9;
+    public static final double TELESCOPIC_SPEED_LOWER = 0.2;
     public static final double SHOOTING_SPEED = 1;
-    public static final double INTAKE_SPEED = 0.7;
+    public static final double INTAKE_SPEED = 1;
     public static final double SHOOTER_BELT_SPEED = 1;
     public static final double STORAGE_BELT_MAX_SPEED = 0.8;
     

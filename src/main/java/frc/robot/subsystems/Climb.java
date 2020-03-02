@@ -19,7 +19,6 @@ public class Climb extends SubsystemBase {
 
   public Climb() {
     telescopic = new Spark(Constants.Ports.Motors.CLIMB_TELESCOPIC);
-
     leftClimb = new Spark(Constants.Ports.Motors.CLIMB_LEFT);
     rightClimb = new Spark(Constants.Ports.Motors.CLIMB_RIGHT);
     climb = new SpeedControllerGroup(leftClimb, rightClimb);
@@ -29,13 +28,17 @@ public class Climb extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  public void setTelescopic(double speed) {
+    telescopic.set(speed);
+  }
   
   public void raiseTelescopic(){
-    telescopic.set(Constants.TELESCOPIC_SPEED);
+    telescopic.set(Constants.TELESCOPIC_SPEED_RAISE);
   }
 
   public void lowerTelescopic(){
-    telescopic.set(-Constants.TELESCOPIC_SPEED);
+    telescopic.set(-Constants.TELESCOPIC_SPEED_LOWER);
   }
 
   public void stopTelescopic() {

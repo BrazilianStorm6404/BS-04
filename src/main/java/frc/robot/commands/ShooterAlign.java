@@ -28,7 +28,7 @@ public class ShooterAlign extends PIDCommand {
 				return treatDistance(Shuffleboard.getTab("Vision").add("Distance", 0).getEntry().getDouble(0));
 			},
 			output -> {
-				m_Shooter.Move(output);
+				m_Shooter.moveUp();
 				if (output < 0.05) {
 					finished = true;
 				}

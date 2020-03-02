@@ -69,8 +69,7 @@ public class Drivetrain extends PIDSubsystem {
 
   @Override
   protected void useOutput(double output, double setpoint) {
-    Shuffleboard.getTab("DriveTarin").addNumber("PID Output", () -> output);
-
+    Shuffleboard.getTab("DriveTrain").addNumber("PID Output", () -> output);
   }
 
   @Override

@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,28 +21,33 @@ public class Storage extends SubsystemBase {
 
   private VictorSPX belt, joint, intake;
 
+  private NetworkTablesEntry entryS0, entryS1;
+  private ShuffleboardTab tabColetor;
   // S0's the first position in storage.
   // S1's the second position in storage.
   private DigitalInput OP_S0, OP_S1;
-  private Pixy pixy;
+  // private Pixy pixy;
 
   public boolean[] balls =  {false, false, false, false, false};
 
   public Storage() {
-    pixy = new Pixy();
-
     belt = new VictorSPX(Constants.Ports.Motors.STORAGE_BELT);
     joint = new VictorSPX(Constants.Ports.Motors.COLLECTOR_JOINT);
     intake = new VictorSPX(Constants.Ports.Motors.COLLECTOR_INTAKE);
+    belt.setInverted(true);
 
     OP_S0 = new DigitalInput(Constants.Ports.Sensors.STORAGE_OPTIC_S0);
     OP_S1 = new DigitalInput(Constants.Ports.Sensors.STORAGE_OPTIC_S1);
 
+    tabColetor = Shuffleboard.getTab("Coletor");
+    entryS0 = tabColetor.getEntry("S0");
+    entryS1 = tabColetor.getEntry("S1");
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    tabColetor.getEntry("S0");
   }
 
   public void MoveBelt(double speed){
@@ -61,16 +67,11 @@ public class Storage extends SubsystemBase {
   }
 
   public boolean getOPS0(){
-    return OP_S0.get();
+    return !OP_S0.get();
   }
 
   public boolean getOPS1(){
     return OP_S1.get();
-  }
-
-
-  public double getArea(){
-    return pixy.getBiggestBlock().getY() * pixy.getBiggestBlock().getX();
   }
 
 }

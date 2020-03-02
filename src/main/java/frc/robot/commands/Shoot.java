@@ -33,12 +33,13 @@ public class Shoot extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    /*
     numBalls = 0;
     t.start();
     for (boolean ball : _storage.balls) 
       if (ball)
         numBalls++;
-    
+    */
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -46,26 +47,31 @@ public class Shoot extends CommandBase {
   public void execute() {
     _shooter.Shoot();
     _storage.MoveBelt(1);
+    _shooter.moveBelt();
 
     // Ajustar constante de corrente da Power Distribution Panel.
     // Verificar porta da PDP.
     //***
+    /*
     if(_pdp.getCurrent(Constants.Ports.Motors.SHOOTER_SHOOT)>10 && t.get() > 1){
       numBalls--;
       t.reset();
       t.start();
     }
-
+    */
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    _shooter.stopShooting();
+    _storage.MoveBelt(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return numBalls <= 0;
+    //return numBalls <= 0;
+    return false;
   }
 }
