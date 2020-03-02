@@ -136,7 +136,7 @@ public class RobotContainer {
     //*** */
     // An ExampleCommand will run in autonomous
     return new SequentialCommandGroup(
-      new Straight(m_navx, m_DriveTrain, 0.3);
+      new Straight(m_navx, m_DriveTrain, 0, 0.3)
     );
   }
 
