@@ -22,7 +22,9 @@ public class Straight extends PIDCommand {
   /**
    * Create a new Command to drive straight using a NavX sensor
    */
-  public Straight(AHRS navX, Drivetrain drivetrain, double setpoint) {
+  private Drivetrain _drivetrain;
+  private double _distance;
+  public Straight(AHRS navX, Drivetrain drivetrain, double setpoint, double distance) {
     super(
         new PIDController(Constants.DRIVE_kP, Constants.DRIVE_kI, Constants.DRIVE_kD),
         () -> {
@@ -33,20 +35,19 @@ public class Straight extends PIDCommand {
         },
         output -> {
           if (output != 0) {
-            drivetrain.arcadeDrive(0, output);
+            drivetrain.arcadeDrive(0.5, output);
           }
         });
+      _drivetrain = drivetrain;
+      _distance = distance;
   }
   /**
    * Use to stop the PIDController
    */
-  public void kill() {
-    killed = true;
-  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return killed;
+    return _drivetrain.getEncoderLeft() > _distance;
   }
 }

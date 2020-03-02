@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ActivateShooter;
 import frc.robot.commands.ControlStorage;
 import frc.robot.commands.Shoot;
+import frc.robot.libs.auto.drive.Straight;
 import frc.robot.libs.sensorsIMPL.Pixy;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Drivetrain;
@@ -135,11 +136,7 @@ public class RobotContainer {
     //*** */
     // An ExampleCommand will run in autonomous
     return new SequentialCommandGroup(
-      new PIDCommand(new PIDController(Constants.DRIVE_kP,Constants.DRIVE_kI,Constants.DRIVE_kD),
-        () -> m_DriveTrain.getEncoderLeft(),
-        0.3,
-        output -> m_DriveTrain.arcadeDrive(0.0, output),
-        m_DriveTrain)
+      new Straight(m_navx, m_DriveTrain, 0.3);
     );
   }
 
