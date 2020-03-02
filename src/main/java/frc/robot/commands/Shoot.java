@@ -46,7 +46,7 @@ public class Shoot extends CommandBase {
   @Override
   public void execute() {
     _shooter.Shoot();
-    _storage.MoveBelt(1);
+    _storage.MoveBelt();
     _shooter.moveBelt();
 
     // Ajustar constante de corrente da Power Distribution Panel.
@@ -65,7 +65,7 @@ public class Shoot extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     _shooter.stopShooting();
-    _storage.MoveBelt(0);
+    _storage.MoveBelt();
   }
 
   // Returns true when the command should end.

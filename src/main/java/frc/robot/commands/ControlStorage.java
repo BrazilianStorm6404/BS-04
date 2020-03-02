@@ -41,9 +41,8 @@ public class ControlStorage extends CommandBase {
 
 		if (s0) {
 			pulling = true;
-			if (_storage.balls[1] == false) {
-				if (s1) {
-					_storage.MoveBelt(0);
+			if (!_storage.balls[0]) {
+				if (!(s1 && (!lastS1))) {
 					_storage.balls[i] = true;
 					i++;
 					considerGap = false;
@@ -56,13 +55,19 @@ public class ControlStorage extends CommandBase {
 			pulling = false;
 			if (considerGap) {
 				if (s0 && (!lastS0)) {
-					_storage.MoveBelt(0);
+					_storage.MoveBelt();
 					_storage.balls[i] = true;
 					i++;
 					considerGap = false;
 					pulling = false;
 				}
 			}
+		}
+
+		if (pulling) {
+			_storage.MoveBelt();
+		} else {
+			_storage.stopBelt();
 		}
 
 		lastS0 = _storage.getOPS0();

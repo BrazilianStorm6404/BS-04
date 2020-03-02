@@ -29,8 +29,9 @@ public final class Constants {
         
         public static class Sensors {
             
-            public static final int STORAGE_OPTIC_S1 = 9;
-            public static final int STORAGE_OPTIC_S0 = 8; 
+            // Portas S0 e S1 foram invertidas de 9 (S1) e 8 (S0) para 8 (S1) e 9 (S0)
+            public static final int STORAGE_OPTIC_S1 = 8;
+            public static final int STORAGE_OPTIC_S0 = 9; 
             public static final int SHOOTER_LIMIT_HIGH = 7;
             public static final int SHOOTER_LIMIT_LOW = 6;
             public static final int DRIVE_ENC_LEFT_A = 0;

@@ -38,7 +38,7 @@ public class RobotContainer {
   private JoystickButton pilot_RB, pilot_ButtonA;
 
   // BUTTONS CONTROLLER 2
-  private JoystickButton CO_ButtonX, CO_ButtonB;
+  private JoystickButton CO_ButtonX, CO_ButtonB, CO_ButtonY;
 
   // SENSORS
   private AHRS m_navx;
@@ -80,7 +80,7 @@ public class RobotContainer {
     COpilot = new XboxController(Constants.OI_Map.COPILOT);
     CO_ButtonX = new JoystickButton(COpilot, Constants.OI_Map.BUTTON_X);
     CO_ButtonB = new JoystickButton(COpilot, Constants.OI_Map.BUTTON_B);
-
+    CO_ButtonY = new JoystickButton(COpilot, Constants.OI_Map.BUTTON_Y);
     }
 
   //#region BUTTON BINDINGS
@@ -105,12 +105,16 @@ public class RobotContainer {
     }, m_Climb)
     .whenReleased(()-> m_Climb.stopClimb(), m_Climb);
 
+    CO_ButtonY.whileHeld(() -> {
+      m_Storage.MoveBelt();
+    }, m_Storage).whenReleased(() -> m_Storage.stopBelt(), m_Storage);
+
     pilot_RB.whileHeld(new Shoot(m_Shooter, m_Storage, m_PDP))
     .whenReleased(new RunCommand(()->{
 
       m_Shooter.stopShooting();
       m_Shooter.stopBelt();
-      m_Storage.MoveBelt(0);
+      m_Storage.MoveBelt();
 
     }, m_Shooter, m_Storage));
 

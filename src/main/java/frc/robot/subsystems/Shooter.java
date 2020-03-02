@@ -9,10 +9,14 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -21,6 +25,9 @@ public class Shooter extends SubsystemBase {
 	private Spark angle;
 	private VictorSP belt;
 	private VictorSPX shoot;
+
+	private NetworkTableEntry entryGyro, entryLimitHigh, entryLimitLow;
+	private ShuffleboardTab tabShooter;
 
 	private ADXRS450_Gyro gyro;
 	private DigitalInput limitHigh;
@@ -35,6 +42,12 @@ public class Shooter extends SubsystemBase {
 		limitHigh = new DigitalInput(Constants.Ports.Sensors.SHOOTER_LIMIT_HIGH);
 		limitLow = new DigitalInput(Constants.Ports.Sensors.SHOOTER_LIMIT_LOW);
 		belt.setInverted(true);
+		angle.setInverted(true);
+
+		tabShooter = Shuffleboard.getTab("Shooter");
+		entryLimitHigh = tabShooter.add("Limit Cima", false).getEntry();
+		entryLimitLow = tabShooter.add("Limit Baixo", false).getEntry();
+		entryGyro = tabShooter.add("Gyro", 0.0).getEntry();
 	}
 
 	@Override
@@ -42,6 +55,18 @@ public class Shooter extends SubsystemBase {
 		if (limitLow.get()) {
 			gyro.reset();
 		}
+
+		entryLimitHigh.setBoolean(this.getLimitHigh());
+		entryLimitLow.setBoolean(this.getLimitLow());
+		entryGyro.forceSetDouble(this.getGyroAngle());
+	}
+
+	public boolean getLimitLow() {
+		return limitLow.get();
+	}
+
+	public boolean getLimitHigh() {
+		return limitHigh.get();
 	}
 
 	public void Shoot() {
