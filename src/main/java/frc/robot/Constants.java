@@ -37,23 +37,24 @@ public final class Constants {
             public static final int SHOOTER_LIMIT_HIGH = 7;
             public static final int INTAKE_OPTIC = 8;
             public static final int STORAGE_OPTIC = 9; 
+            public static final int PDP_PORT = 20;
         }
 
         public static class Motors{
             
             //CAN
-            public static final int DRIVE_LEFT_FRONT = 0;
-            public static final int DRIVE_LEFT_BACK = 1;
-            public static final int DRIVE_RIGHT_FRONT = 2;
-            public static final int DRIVE_RIGHT_BACK = 3;
+            public static final int DRIVE_LEFT_FRONT = 0; 
+            public static final int DRIVE_LEFT_BACK = 1;  
+            public static final int DRIVE_RIGHT_FRONT = 2; 
+            public static final int DRIVE_RIGHT_BACK = 3; 
 
-            public static final int INTAKE_ANGLE = 4;
+            public static final int INTAKE_ANGLE = 4; 
             public static final int INTAKE_COLLECTOR = 5; 
 
-            public static final int STORAGE_BELT = 6;
+            public static final int STORAGE_BELT = 6; 
 
-            public static final int SHOOTER_BELT = 7;
-            public static final int SHOOTER_SHOOT = 8;
+            public static final int SHOOTER_BELT = 9; 
+            public static final int SHOOTER_SHOOT = 7;
 
             //PWM
             public static final int SHOOTER_ANGLE = 0;

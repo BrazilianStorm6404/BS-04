@@ -91,8 +91,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     // BUTTON X OF COPILOT = INTAKE
-    CO_ButtonX.whenPressed(()-> intake.set(0.0), m_Storage)
-      .whenReleased(() -> intake.set(Constants.INTAKE_SPEED), m_Storage);
+    CO_ButtonX.whenPressed(()-> intake.set(Constants.INTAKE_SPEED), m_Storage)
+      .whenReleased(() -> intake.set(0.0), m_Storage);
 
     // BUTTON A OF PILOT = TURN
     pilot_ButtonA.whileHeld(() -> m_DriveTrain.arcadeDrive(0, 1), m_DriveTrain);
@@ -120,7 +120,7 @@ public class RobotContainer {
 
     // SENSORS
     m_navx = new AHRS(SerialPort.Port.kMXP);
-    m_PDP  = new PowerDistributionPanel(0);
+    m_PDP  = new PowerDistributionPanel(Constants.Ports.Sensors.PDP_PORT);
 
     // SUBSYSTEMS
     m_Storage = new Storage();

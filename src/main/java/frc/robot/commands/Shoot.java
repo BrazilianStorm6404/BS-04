@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Shooter;
@@ -40,6 +41,7 @@ public class Shoot extends CommandBase {
     // Ajustar constante de corrente da Power Distribution Panel.
     // Verificar porta da PDP.
     //***
+    SmartDashboard.putNumber("motor", m_pdp.getCurrent(Constants.Ports.Motors.SHOOTER_SHOOT));
     if(m_pdp.getCurrent(Constants.Ports.Motors.SHOOTER_SHOOT)>10)
       m_storage.removePowerCells();
 
