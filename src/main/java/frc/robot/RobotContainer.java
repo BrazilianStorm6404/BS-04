@@ -9,13 +9,14 @@ package frc.robot;
 
 import java.util.List;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -27,16 +28,11 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.ActivateShooter;
 import frc.robot.commands.ControlStorage;
 import frc.robot.commands.Shoot;
-import frc.robot.libs.auto.drive.Straight;
-import frc.robot.libs.sensorsIMPL.Pixy;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
@@ -55,8 +51,6 @@ public class RobotContainer {
 
   // SENSORS
   private AHRS m_navx;
-  private Pixy m_pixy;
-
   //This must be refactored
   //private Encoder_AMT103 encoderT1;
 
@@ -68,6 +62,9 @@ public class RobotContainer {
   private PowerDistributionPanel m_PDP;
 
   // COMMANDS
+
+  // MOTORS
+  WPI_VictorSPX intake;
 
   // SHUFFLEBOARD
 
@@ -105,11 +102,11 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    CO_ButtonX.whenPressed(()-> m_Storage.pullPowerCell(), m_Storage)
-      .whenReleased(() -> m_Storage.stopPowerCell(), m_Storage);
+    CO_ButtonX.whenPressed(()-> intake.set(Constants.INTAKE_SPEED), m_Storage)
+      .whenReleased(() -> intake.set(0), m_Storage);
     
-      new JoystickButton(pilot, Constants.OI_Map.BUTTON_X).whenPressed(() -> m_Storage.reversePowerCell(),m_Storage)
-      .whenReleased(() -> m_Storage.stopPowerCell(), m_Storage);
+      new JoystickButton(pilot, Constants.OI_Map.BUTTON_X).whenPressed(() -> intake.set(-Constants.INTAKE_SPEED),m_Storage)
+      .whenReleased(() -> intake.set(Constants.INTAKE_SPEED), m_Storage);
     pilot_ButtonA.whileHeld(() -> m_DriveTrain.arcadeDrive(0, 1), m_DriveTrain);
 
     CO_ButtonB.whileHeld(()-> {
@@ -121,15 +118,15 @@ public class RobotContainer {
     .whenReleased(()-> m_Climb.stopClimb(), m_Climb);
 
     CO_ButtonY.whileHeld(() -> {
-      m_Storage.MoveBelt();
-    }, m_Storage).whenReleased(() -> m_Storage.stopBelt(), m_Storage);
+      m_Storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
+    }, m_Storage).whenReleased(() -> m_Storage.MoveBelt(0), m_Storage);
 
     pilot_RB.whileHeld(new Shoot(m_Shooter, m_Storage, m_PDP))
     .whenReleased(new RunCommand(()->{
 
       m_Shooter.stopShooting();
       m_Shooter.stopBelt();
-      m_Storage.MoveBelt();
+      m_Storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
 
     }, m_Shooter, m_Storage));
 
@@ -138,12 +135,16 @@ public class RobotContainer {
 
   public void init() {
 
+    // MOTORS
+    intake = new WPI_VictorSPX(Constants.Ports.Motors.INTAKE_COLLECTOR);
+
     // SENSORS
     m_navx = new AHRS(SerialPort.Port.kUSB);
     m_DriveTrain = new Drivetrain(m_navx);
     m_PDP  = new PowerDistributionPanel(Constants.Ports.Sensors.PDP_PORT);
   }
   
+  //#region AUTONOMOUS
   public Command getAutonomousCommand() {
     m_navx.reset();
     // Implementar rotina autônoma.
@@ -203,8 +204,9 @@ public class RobotContainer {
     );
     */
   }
+  //#endregion
 
-
+  //#region CALL BINDERS
   public void callBinders() {
 
     m_DriveTrain.setDefaultCommand(new RunCommand(() -> {
@@ -236,4 +238,5 @@ public class RobotContainer {
 
     m_Storage.setDefaultCommand(new ControlStorage(m_Storage));
   }
+  //#endregion
 }

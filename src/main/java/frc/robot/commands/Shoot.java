@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Shooter;
@@ -60,7 +61,7 @@ public class Shoot extends CommandBase {
   public void end(boolean interrupted) {
     m_storage.shoot = false;
     m_shooter.stopShooting();
-    m_storage.MoveBelt();
+    m_storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
   }
 
   // Returns true when the command should end.

@@ -18,7 +18,7 @@ public final class Constants {
     public static final double SHOOTING_SPEED = 1;
     public static final double INTAKE_SPEED = 1;
     public static final double SHOOTER_BELT_SPEED = 1;
-    public static final double STORAGE_BELT_MAX_SPEED = 0.4;
+    public static final double STORAGE_BELT_SPEED = 0.4;
     public static final double STORAGE_MIN_PIXY_AREA = 100;
     //PID
     public static final double DRIVE_kP = 0.03, DRIVE_kI = 0.00003, DRIVE_kD = 0.006;
@@ -30,9 +30,9 @@ public final class Constants {
         
         public static class Sensors {
             
-            // Portas S0 e S1 foram invertidas de 9 (S1) e 8 (S0) para 8 (S1) e 9 (S0)
-            public static final int STORAGE_OPTIC_S1 = 8;
-            public static final int STORAGE_OPTIC_S0 = 9; 
+            
+            public static final int INTAKE_OPTIC = 9;
+            public static final int STORAGE_OPTIC = 8; 
             public static final int SHOOTER_LIMIT_HIGH = 7;
             public static final int SHOOTER_LIMIT_LOW = 6;
             public static final int DRIVE_ENC_LEFT_A = 0;
