@@ -123,7 +123,7 @@ public class Drivetrain extends PIDSubsystem {
   }
 
   public double getHeading() {
-    return Math.IEEEremainder(_navX.getYaw(), 360);
+    return Math.IEEEremainder(this._navX.getYaw(), 360);
   }
 
   public double getTurnRate() {

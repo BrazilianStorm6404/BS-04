@@ -49,19 +49,19 @@ public final class Constants {
             public static final int DRIVE_LEFT_BACK = 2;
             public static final int DRIVE_RIGHT_FRONT = 1;
             public static final int DRIVE_RIGHT_BACK = 0;
+            public static final int CLIMB_TELESCOPIC = 5;
+            public static final int SHOOTER_BELT = 9;
 
             // CAN
-            public static final int SHOOTER_ANGLE = 0;
-            public static final int SHOOTER_BELT = 9;
-            public static final int SHOOTER_SHOOT = 11;
+            public static final int SHOOTER_ANGLE = 4;
+            public static final int SHOOTER_SHOOT = 7;
 
-            public static final int COLLECTOR_JOINT = 8;
-            public static final int COLLECTOR_INTAKE = 9;
-            public static final int STORAGE_BELT = 10;
+            public static final int COLLECTOR_JOINT = 0;
+            public static final int COLLECTOR_INTAKE = 5;
+            public static final int STORAGE_BELT = 6;
 
-            public static final int CLIMB_RIGHT = 2;
+            public static final int CLIMB_RIGHT = 1;
             public static final int CLIMB_LEFT = 3;
-            public static final int CLIMB_TELESCOPIC = 1;
     
         }
     }

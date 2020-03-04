@@ -62,7 +62,7 @@ public class RobotContainer {
 
   // SUBSYSTEMS
   private final Climb m_Climb = new Climb();
-  private final Drivetrain m_DriveTrain = new Drivetrain( m_navx);
+  private Drivetrain m_DriveTrain;
   private final Shooter m_Shooter = new Shooter();
   private final Storage m_Storage = new Storage();
   private PowerDistributionPanel m_PDP;
@@ -140,7 +140,7 @@ public class RobotContainer {
 
     // SENSORS
     m_navx = new AHRS(SerialPort.Port.kUSB);
-    
+    m_DriveTrain = new Drivetrain(m_navx);
     m_PDP  = new PowerDistributionPanel(0);
   }
   
