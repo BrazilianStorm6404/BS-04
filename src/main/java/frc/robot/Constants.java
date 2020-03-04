@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+
 public final class Constants {
 
     public static final double SHOOTER_ANGLE_SPEED = 0.5;
@@ -43,10 +45,10 @@ public final class Constants {
         public static class Motors{
             
             // PWM
-            public static final int DRIVE_LEFT_FRONT = 1;
+            public static final int DRIVE_LEFT_FRONT = 3;
             public static final int DRIVE_LEFT_BACK = 2;
-            public static final int DRIVE_RIGHT_FRONT = 3;
-            public static final int DRIVE_RIGHT_BACK = 4;
+            public static final int DRIVE_RIGHT_FRONT = 1;
+            public static final int DRIVE_RIGHT_BACK = 0;
 
             // CAN
             public static final int SHOOTER_ANGLE = 0;
@@ -91,7 +93,9 @@ public final class Constants {
         public static final double kaVoltSecondsSquaredPerMeter = 0.294;
         public static final double kPDriveVel = 11;
         public static final double kTrackwidthMeter = 0.65;
-        public static final double kMaxSpeedMetersPerSeconds = 3;
+        public static final DifferentialDriveKinematics kDriveKinematics =
+        new DifferentialDriveKinematics(kTrackwidthMeter);
+        public static final double kMaxSpeedMetersPerSecond = 3;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
