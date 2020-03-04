@@ -13,17 +13,20 @@ import frc.robot.subsystems.Storage;
 
 public class ControlStorage extends CommandBase {
 
-	private Storage m_storage;
+	private Storage _storage;
+	int i = 0;
 
-	private int PowerCellInitialCount;
+	boolean s0 = false;
+	boolean s1 = false;
+	boolean lastS0 = false;
+	boolean lastS1 = false;
+	boolean pulling = false;
+	boolean considerGap = false;
 
-	private boolean intake = false;
-	private boolean verifier = false;
+	public ControlStorage(Storage m_storage) {
+		addRequirements(m_storage);
 
-	public ControlStorage(Storage Storage) {
-		addRequirements(Storage);
-		m_storage = Storage;
-		PowerCellInitialCount = Storage.getPowerCellCount();
+		_storage = m_storage;
 	}
 
 	// Called when the command is initially scheduled.
@@ -34,15 +37,46 @@ public class ControlStorage extends CommandBase {
 	// Called every time the scheduler runs while the command is scheduled.
 	@Override
 	public void execute() {
-		intake = m_storage.getIRDetectorValue();
-		verifier = m_storage.getIRVerifierValue();
+		s0 = _storage.getOPS0();
+		s1 = _storage.getOPS1();
 
-		if(intake) {
-			m_storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
-		} else if(!intake && verifier) {
-			m_storage.MoveBelt(0.0);
-			m_storage.addPowerCells();
+		if(!_storage.shoot) {
+			if(s0) _storage.MoveBelt();
+			else if(!s0 && s1) _storage.stopBelt();
+			else if(!s0) _storage.stopBelt();
+		/*if (s0) {
+			pulling = true;
+			if (!_storage.balls[0]) {
+				if (!(s1 && (!lastS1))) {
+					_storage.balls[i] = true;
+					i++;
+					considerGap = false;
+					pulling = false;
+				}
+			} else {
+				considerGap = true;
+			}
+		} else {
+			pulling = false;
+			if (considerGap) {
+				if (s0 && (!lastS0)) {
+					_storage.MoveBelt();
+					_storage.balls[i] = true;
+					i++;
+					considerGap = false;
+					pulling = false;
+				}
+			}
 		}
+
+		if (pulling) {
+			_storage.MoveBelt();
+		} else {
+			_storage.stopBelt();
+		}*/
+		}
+		lastS0 = _storage.getOPS0();
+		lastS1 = _storage.getOPS1();
 	}
 
 	// Called once the command ends or is interrupted.
@@ -53,7 +87,6 @@ public class ControlStorage extends CommandBase {
 	// Returns true when the command should end.
 	@Override
 	public boolean isFinished() {
-		return PowerCellInitialCount != m_storage.getPowerCellCount();
+		return false;
 	}
-
 }
