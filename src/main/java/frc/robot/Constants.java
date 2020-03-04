@@ -86,11 +86,11 @@ public final class Constants {
         
         // Constantes provindas do FRC-Characterization
         // Não foram definidas ainda.
-        public static final double ksVolts = 0.22;
-        public static final double kvVoltSecondsPerMeter = 1.98;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.2;
-        public static final double kPDriveVel = 8.5;
-        public static final double kTrackwidthMeter = 0.69;
+        public static final double ksVolts = 0.833;
+        public static final double kvVoltSecondsPerMeter = 3.19;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.294;
+        public static final double kPDriveVel = 11;
+        public static final double kTrackwidthMeter = 0.65;
         public static final double kMaxSpeedMetersPerSeconds = 3;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
         public static final double kRamseteB = 2;

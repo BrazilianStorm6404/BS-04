@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
@@ -27,6 +30,8 @@ public class Drivetrain extends PIDSubsystem {
   private SpeedControllerGroup _left, _right;
   private DifferentialDrive m_drive;
   private AHRS _navX;
+
+  private final DifferentialDriveOdometry m_odometry;
   //ENCODERS
   Encoder encoderLeft, encoderRight;
 
@@ -59,6 +64,7 @@ public class Drivetrain extends PIDSubsystem {
 
     m_drive = new DifferentialDrive(_left, _right);
 
+    m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
     drivetrainTab = Shuffleboard.getTab("Tração");
     encoderLeftEntry = drivetrainTab.add("Encoder Esquerdo", 0.0).getEntry();
     encoderRightEntry = drivetrainTab.add("Encoder Direito", 0.0).getEntry();
@@ -69,6 +75,35 @@ public class Drivetrain extends PIDSubsystem {
     // This method will be called once per scheduler run
     encoderLeftEntry.forceSetDouble(this.getEncoderLeft());
     encoderRightEntry.forceSetDouble(this.getEncoderRight());
+
+    // Atualização de odometria para PathWeaver
+    m_odometry.update(Rotation2d.fromDegrees(getHeading()), encoderLeft.getDistance(),
+                      encoderRight.getDistance());
+  }
+
+  // Funções utilitárias para PathWeaver
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
+  }
+
+  public void setMaxOutput(double maxOutput) {
+    m_drive.setMaxOutput(maxOutput);
+  }
+
+  public void zeroHeading() {
+    _navX.reset();
+  }
+
+
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
+    _left.setVoltage(leftVolts);
+    _right.setVoltage(-rightVolts);
+    m_drive.feed();
+  }
+
+  public void resetOdometry(Pose2d pose) {
+    resetEncoders();
+    m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
   }
 
   public double getEncoderRight() {
@@ -77,6 +112,23 @@ public class Drivetrain extends PIDSubsystem {
 
   public double getEncoderLeft() {
     return encoderLeft.getDistance();
+  }
+
+  public double getAverageEncoderDistance() {
+    return (encoderLeft.getDistance() + encoderRight.getDistance()) / 2.0;
+  }
+
+  public double getHeading() {
+    return Math.IEEEremainder(_navX.getYaw(), 360);
+  }
+
+  public double getTurnRate() {
+    return _navX.getRate();
+  }
+
+  public void resetEncoders() {
+    encoderLeft.reset();
+    encoderRight.reset();
   }
 
   public void arcadeDrive(double fwd, double rot) {
