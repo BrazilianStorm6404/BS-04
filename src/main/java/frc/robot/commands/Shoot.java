@@ -16,24 +16,22 @@ import frc.robot.subsystems.Storage;
 
 public class Shoot extends CommandBase {
   
-  private Shooter _shooter;
-  private Storage _storage;
-  private PowerDistributionPanel _pdp;
-  private int numBalls;
-  private Timer t;
+  private Shooter m_shooter;
+  private Storage m_storage;
+  private PowerDistributionPanel m_pdp;
 
-  public Shoot(Shooter m_Shooter, Storage m_Storage, PowerDistributionPanel m_PDP) {
-    _shooter = m_Shooter;
-    _storage = m_Storage;
-    _pdp = m_PDP;
-    t = new Timer();
-    addRequirements(m_Shooter,m_Storage);
+  public Shoot(Shooter Shooter, Storage Storage, PowerDistributionPanel PDP) {
+    addRequirements(Shooter,Storage);
+    m_shooter = Shooter;
+    m_storage = Storage;
+    m_pdp = PDP;
   }
+
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    _storage.shoot = true;
+    m_storage.shoot = true;
     /*
     numBalls = 0;
     t.start();
@@ -46,34 +44,28 @@ public class Shoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    _shooter.Shoot();
-    _storage.MoveBelt();
-    _shooter.moveBelt();
+    m_shooter.Shoot();
+    m_storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
 
     // Ajustar constante de corrente da Power Distribution Panel.
     // Verificar porta da PDP.
     //***
-    /*
-    if(_pdp.getCurrent(Constants.Ports.Motors.SHOOTER_SHOOT)>10 && t.get() > 1){
-      numBalls--;
-      t.reset();
-      t.start();
-    }
-    */
+    SmartDashboard.putNumber("motor", m_pdp.getCurrent(Constants.Ports.Motors.SHOOTER_SHOOT));
+    if(m_pdp.getCurrent(Constants.Ports.Motors.SHOOTER_SHOOT)>10)
+      m_storage.removePowerCells();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    _storage.shoot = false;
-    _shooter.stopShooting();
-    _storage.MoveBelt();
+    m_storage.shoot = false;
+    m_shooter.stopShooting();
+    m_storage.MoveBelt();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //return numBalls <= 0;
-    return false;
+    return m_storage.getPowerCellCount() <= 0;
   }
 }
