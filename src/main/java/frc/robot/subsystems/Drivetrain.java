@@ -23,8 +23,7 @@ import frc.robot.Constants;
 
 public class Drivetrain extends PIDSubsystem {
 
-  private WPI_VictorSPX _leftFront, _leftBack, _rightBack;
-  private Spark _rightFront;
+  private Spark _leftFront, _leftBack, _rightBack, _rightFront;
   private SpeedControllerGroup _left, _right;
   private DifferentialDrive m_drive;
   private AHRS _navX;

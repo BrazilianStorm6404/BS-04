@@ -22,7 +22,7 @@ import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
 
-	private Spark angle;
+	private VictorSPX angle;
 	private VictorSP belt;
 	private VictorSPX shoot;
 
@@ -34,7 +34,7 @@ public class Shooter extends SubsystemBase {
 	private DigitalInput limitLow;
 
 	public Shooter() {
-		angle = new Spark(Constants.Ports.Motors.SHOOTER_ANGLE);
+		angle = new VictorSPX(Constants.Ports.Motors.SHOOTER_ANGLE);
 		belt = new VictorSP(Constants.Ports.Motors.SHOOTER_BELT);
 		shoot = new VictorSPX(Constants.Ports.Motors.SHOOTER_SHOOT);
 
@@ -77,17 +77,17 @@ public class Shooter extends SubsystemBase {
 	public void moveUp() {
 		double speed = Constants.SHOOTER_ANGLE_SPEED;
 
-		angle.set(speed);
+		angle.set(ControlMode.PercentOutput, speed);
 	}
 
 	public void moveDown() {
 		double speed = Constants.SHOOTER_ANGLE_SPEED * -1;
 
-		angle.set(speed);
+		angle.set(ControlMode.PercentOutput, speed);
 	}
 
 	public void stopMoving() {
-		angle.set(0);
+		angle.set(ControlMode.PercentOutput, 0);
 	}
 	
 	public void stopShooting() {

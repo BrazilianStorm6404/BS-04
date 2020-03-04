@@ -42,11 +42,13 @@ public final class Constants {
 
         public static class Motors{
             
+            // PWM
             public static final int DRIVE_LEFT_FRONT = 1;
             public static final int DRIVE_LEFT_BACK = 2;
             public static final int DRIVE_RIGHT_FRONT = 3;
             public static final int DRIVE_RIGHT_BACK = 4;
 
+            // CAN
             public static final int SHOOTER_ANGLE = 0;
             public static final int SHOOTER_BELT = 9;
             public static final int SHOOTER_SHOOT = 11;

@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,13 +16,13 @@ import frc.robot.Constants;
 
 public class Climb extends SubsystemBase {
   
-  private Spark leftClimb, rightClimb, telescopic;
+  private WPI_VictorSPX leftClimb, rightClimb, telescopic;
   private SpeedControllerGroup climb;
 
   public Climb() {
-    telescopic = new Spark(Constants.Ports.Motors.CLIMB_TELESCOPIC);
-    leftClimb = new Spark(Constants.Ports.Motors.CLIMB_LEFT);
-    rightClimb = new Spark(Constants.Ports.Motors.CLIMB_RIGHT);
+    telescopic = new WPI_VictorSPX(Constants.Ports.Motors.CLIMB_TELESCOPIC);
+    leftClimb = new WPI_VictorSPX(Constants.Ports.Motors.CLIMB_LEFT);
+    rightClimb = new WPI_VictorSPX(Constants.Ports.Motors.CLIMB_RIGHT);
     climb = new SpeedControllerGroup(leftClimb, rightClimb);
   }
 
@@ -42,7 +44,7 @@ public class Climb extends SubsystemBase {
   }
 
   public void stopTelescopic() {
-    telescopic.setSpeed(0.0);
+    telescopic.set(0.0);
   }
   
   public void climb (){
