@@ -141,7 +141,7 @@ public class RobotContainer {
     // SENSORS
     m_navx = new AHRS(SerialPort.Port.kUSB);
     m_DriveTrain = new Drivetrain(m_navx);
-    m_PDP  = new PowerDistributionPanel(0);
+    m_PDP  = new PowerDistributionPanel(Constants.Ports.Sensors.PDP_PORT);
   }
   
   //#region AUTONOMOUS

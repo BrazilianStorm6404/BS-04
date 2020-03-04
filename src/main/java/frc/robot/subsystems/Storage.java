@@ -16,92 +16,47 @@ import frc.robot.Constants;
 
 public class Storage extends SubsystemBase {
 
-  private VictorSPX belt, joint, intake;
+  private int powerCells = 0;
 
-  private NetworkTableEntry entryS0, entryS1, entryB1, entryB2, entryB3, entryB4, entryB5;
-  private ShuffleboardTab tabColetor;
-  // S0's the first position in storage.
-  // S1's the second position in storage.
-  private DigitalInput OP_S0, OP_S1;
-  //private Pixy pixy;
+  private WPI_VictorSPX belt;
 
-  public boolean[] balls =  {false, false, false, false, false};
+  private DigitalInput IR_intake_detector,IR_intake_verifier;
 
   public boolean shoot = false;
 
   public Storage() {
-    belt = new VictorSPX(Constants.Ports.Motors.STORAGE_BELT);
-    joint = new VictorSPX(Constants.Ports.Motors.COLLECTOR_JOINT);
-    intake = new VictorSPX(Constants.Ports.Motors.COLLECTOR_INTAKE);
-    belt.setInverted(true);
+    belt = new WPI_VictorSPX(Constants.Ports.Motors.STORAGE_BELT);
 
-    OP_S0 = new DigitalInput(Constants.Ports.Sensors.STORAGE_OPTIC_S0);
-    OP_S1 = new DigitalInput(Constants.Ports.Sensors.STORAGE_OPTIC_S1);
-
-    tabColetor = Shuffleboard.getTab("Coletor");
-    entryS0 = tabColetor.add("S0", false).getEntry();
-    entryS1 = tabColetor.add("S1", false).getEntry();
-    entryB1 = tabColetor.add("B1", false).getEntry();
-    entryB2 = tabColetor.add("B2", false).getEntry();
-    entryB3 = tabColetor.add("B3", false).getEntry();
-    entryB4 = tabColetor.add("B4", false).getEntry();
-    entryB5 = tabColetor.add("B5", false).getEntry();
+    IR_intake_detector = new DigitalInput(Constants.Ports.Sensors.STORAGE_OPTIC);
+    IR_intake_verifier = new DigitalInput(Constants.Ports.Sensors.INTAKE_OPTIC);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    entryS0.setBoolean(this.getOPS0());
-    entryS1.setBoolean(this.getOPS1());
-
-    entryB1.setBoolean(balls[0]);
-    entryB2.setBoolean(balls[1]);
-    entryB3.setBoolean(balls[2]);
-    entryB4.setBoolean(balls[3]);
-    entryB5.setBoolean(balls[4]);
-    /*
-    if (this.getBallArea() > Constants.STORAGE_MIN_PIXY_AREA) {
-      this.pullPowerCell();
-    } else {
-      this.stopPowerCell();
-    }
-    */
   }
 
-  public void MoveBelt(){
-    belt.set(ControlMode.PercentOutput, Constants.STORAGE_BELT_MAX_SPEED);
+  public void MoveBelt(double speed){
+    belt.set(ControlMode.PercentOutput, speed * Constants.STORAGE_BELT_SPEED);
   }
 
-  public void stopBelt() {
-    belt.set(ControlMode.PercentOutput, 0);
+  public boolean getIRDetectorValue(){
+    return IR_intake_detector.get();
   }
 
-  public void MoveJoint(double speed){
-    joint.set(ControlMode.PercentOutput, speed);
+  public boolean getIRVerifierValue() {
+    return IR_intake_verifier.get();
   }
 
-  public void pullPowerCell(){
-    intake.set(ControlMode.PercentOutput, Constants.INTAKE_SPEED);
+  public void addPowerCells() {
+    powerCells++;
   }
 
-  public void reversePowerCell() {
-    intake.set(ControlMode.PercentOutput, -Constants.INTAKE_SPEED);
+  public int getPowerCellCount() {
+    return powerCells;
   }
 
-  public void stopPowerCell(){
-    intake.set(ControlMode.PercentOutput, 0);
-  }
-
-  public boolean getOPS0(){
-    return OP_S0.get();
-  }
-
-  public boolean getOPS1(){
-    return !OP_S1.get();
-  }
-
-  public double getBallArea() {
-  //return pixy.getBiggestBlock().getX() * pixy.getBiggestBlock().getY();
-   return 0;
+  public void removePowerCells() {
+    powerCells--;
   }
 }
