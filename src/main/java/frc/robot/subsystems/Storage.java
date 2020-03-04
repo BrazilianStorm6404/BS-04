@@ -1,9 +1,9 @@
-/*----------------------------------------------------------------------------*/
+//----------------------------------------------------------------------------/
 /* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
-/*----------------------------------------------------------------------------*/
+//----------------------------------------------------------------------------/
 
 package frc.robot.subsystems;
 
@@ -33,7 +33,6 @@ public class Storage extends SubsystemBase {
   public boolean[] balls =  {false, false, false, false, false};
 
   public Storage() {
-    pixy = new Pixy();
     belt = new VictorSPX(Constants.Ports.Motors.STORAGE_BELT);
     joint = new VictorSPX(Constants.Ports.Motors.COLLECTOR_JOINT);
     intake = new VictorSPX(Constants.Ports.Motors.COLLECTOR_INTAKE);
@@ -64,11 +63,7 @@ public class Storage extends SubsystemBase {
     entryB4.setBoolean(balls[3]);
     entryB5.setBoolean(balls[4]);
 
-    if (this.getBallArea() > Constants.STORAGE_MIN_PIXY_AREA) {
-      this.pullPowerCell();
-    } else {
-      this.stopPowerCell();
-    }
+
   }
 
   public void MoveBelt(){
@@ -100,6 +95,7 @@ public class Storage extends SubsystemBase {
   }
 
   public double getBallArea() {
-    return pixy.getBiggestBlock().getX() * pixy.getBiggestBlock().getY();
+  //return pixy.getBiggestBlock().getX() * pixy.getBiggestBlock().getY();
+   return 0;
   }
 }
