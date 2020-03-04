@@ -33,13 +33,7 @@ public class Shoot extends CommandBase {
   @Override
   public void initialize() {
     m_storage.shoot = true;
-    /*
-    numBalls = 0;
-    t.start();
-    for (boolean ball : _storage.balls) 
-      if (ball)
-        numBalls++;
-    */
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.

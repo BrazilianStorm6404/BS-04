@@ -14,16 +14,12 @@ import frc.robot.subsystems.Storage;
 public class ControlStorage extends CommandBase {
 
 	private Storage m_storage;
-
-	private int PowerCellInitialCount;
-
 	private boolean intake = false;
 	private boolean verifier = false;
 
 	public ControlStorage(Storage Storage) {
 		addRequirements(Storage);
 		m_storage = Storage;
-		PowerCellInitialCount = Storage.getPowerCellCount();
 	}
 
 	// Called when the command is initially scheduled.
@@ -53,7 +49,7 @@ public class ControlStorage extends CommandBase {
 	// Returns true when the command should end.
 	@Override
 	public boolean isFinished() {
-		return PowerCellInitialCount != m_storage.getPowerCellCount();
+		return false;
 	}
 
 }
