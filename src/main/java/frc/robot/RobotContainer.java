@@ -95,7 +95,9 @@ public class RobotContainer {
 
     CO_ButtonX.whenPressed(()-> m_Storage.pullPowerCell(), m_Storage)
       .whenReleased(() -> m_Storage.stopPowerCell(), m_Storage);
-
+    
+      new JoystickButton(pilot, Constants.OI_Map.BUTTON_X).whenPressed(() -> m_Storage.reversePowerCell(),m_Storage)
+      .whenReleased(() -> m_Storage.stopPowerCell(), m_Storage);
     pilot_ButtonA.whileHeld(() -> m_DriveTrain.arcadeDrive(0, 1), m_DriveTrain);
 
     CO_ButtonB.whileHeld(()-> {

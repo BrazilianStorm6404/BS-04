@@ -33,6 +33,7 @@ public class Shoot extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    _storage.shoot = true;
     /*
     numBalls = 0;
     t.start();
@@ -64,6 +65,7 @@ public class Shoot extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    _storage.shoot = false;
     _shooter.stopShooting();
     _storage.MoveBelt();
   }

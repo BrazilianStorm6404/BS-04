@@ -16,7 +16,7 @@ public final class Constants {
     public static final double SHOOTING_SPEED = 1;
     public static final double INTAKE_SPEED = 1;
     public static final double SHOOTER_BELT_SPEED = 1;
-    public static final double STORAGE_BELT_MAX_SPEED = 0.8;
+    public static final double STORAGE_BELT_MAX_SPEED = 0.4;
     public static final double STORAGE_MIN_PIXY_AREA = 100;
     //PID
     public static final double DRIVE_kP = 0.03, DRIVE_kI = 0.00003, DRIVE_kD = 0.006;

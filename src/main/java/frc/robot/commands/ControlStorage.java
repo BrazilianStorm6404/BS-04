@@ -39,7 +39,11 @@ public class ControlStorage extends CommandBase {
 		s0 = _storage.getOPS0();
 		s1 = _storage.getOPS1();
 
-		if (s0) {
+		if(!_storage.shoot) {
+			if(s0) _storage.MoveBelt();
+			else if(!s0 && s1) _storage.stopBelt();
+			else if(!s0) _storage.stopBelt();
+		/*if (s0) {
 			pulling = true;
 			if (!_storage.balls[0]) {
 				if (!(s1 && (!lastS1))) {
@@ -68,8 +72,8 @@ public class ControlStorage extends CommandBase {
 			_storage.MoveBelt();
 		} else {
 			_storage.stopBelt();
+		}*/
 		}
-
 		lastS0 = _storage.getOPS0();
 		lastS1 = _storage.getOPS1();
 	}
