@@ -16,15 +16,14 @@ import frc.robot.Constants;
 
 public class Climb extends SubsystemBase {
   
-  private WPI_VictorSPX leftClimb, rightClimb;
-  private Spark telescopic;
+  private WPI_VictorSPX frontClimb, backClimb, telescopic;
   private SpeedControllerGroup climb;
 
   public Climb() {
-    telescopic = new Spark(Constants.Ports.Motors.CLIMB_TELESCOPIC);
-    leftClimb = new WPI_VictorSPX(Constants.Ports.Motors.CLIMB_LEFT);
-    rightClimb = new WPI_VictorSPX(Constants.Ports.Motors.CLIMB_RIGHT);
-    climb = new SpeedControllerGroup(leftClimb, rightClimb);
+    telescopic = new WPI_VictorSPX(Constants.Ports.Motors.CLIMB_TELESCOPIC);
+    frontClimb = new WPI_VictorSPX(Constants.Ports.Motors.CLIMB_FRONT);
+    backClimb = new WPI_VictorSPX(Constants.Ports.Motors.CLIMB_BACK);
+    climb = new SpeedControllerGroup(frontClimb, backClimb);
   }
 
   @Override

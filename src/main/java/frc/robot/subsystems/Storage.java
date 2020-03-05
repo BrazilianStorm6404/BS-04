@@ -45,7 +45,7 @@ public class Storage extends SubsystemBase {
   }
 
   public boolean getIRVerifierValue() {
-    return IR_intake_verifier.get();
+    return !IR_intake_verifier.get();
   }
 
   public void addPowerCells() {

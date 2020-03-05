@@ -21,9 +21,8 @@ import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
 
-	private VictorSPX angle;
+	private VictorSPX angle, shoot;
 	private VictorSP belt;
-	private VictorSPX shoot;
 
 	private NetworkTableEntry entryGyro, entryLimitHigh, entryLimitLow;
 	private ShuffleboardTab tabShooter;

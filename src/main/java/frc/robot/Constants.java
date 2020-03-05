@@ -53,7 +53,6 @@ public final class Constants {
 
             public static final int SHOOTER_BELT = 9;
 
-
             // CAN
             public static final int CLIMB_FRONT = 0;
             public static final int CLIMB_BACK = 1;

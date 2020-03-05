@@ -44,7 +44,7 @@ public class RobotContainer {
   private XboxController pilot, COpilot;
 
   // BUTTONS CONTROLLER 1
-  private JoystickButton pilot_RB, pilot_ButtonA;
+  private JoystickButton pilot_RB, pilot_ButtonA, pilot_ButtonX;
 
   // BUTTONS CONTROLLER 2
   private JoystickButton CO_ButtonX, CO_ButtonB, CO_ButtonY;
@@ -74,9 +74,9 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    init();
     setControllers();
     configureButtonBindings();
-    init();
   }
   //#endregion
 
@@ -86,6 +86,7 @@ public class RobotContainer {
     pilot = new XboxController(Constants.OI_Map.PILOT);
     pilot_RB = new JoystickButton(pilot, Constants.OI_Map.BUTTON_RIGHT);
     pilot_ButtonA = new JoystickButton(pilot, Constants.OI_Map.BUTTON_A);
+    pilot_ButtonX = new JoystickButton(pilot, Constants.OI_Map.BUTTON_X);
 
     COpilot = new XboxController(Constants.OI_Map.COPILOT);
     CO_ButtonX = new JoystickButton(COpilot, Constants.OI_Map.BUTTON_X);
@@ -105,9 +106,10 @@ public class RobotContainer {
     CO_ButtonX.whenPressed(()-> intake.set(Constants.INTAKE_SPEED), m_Storage)
       .whenReleased(() -> intake.set(0), m_Storage);
     
-      new JoystickButton(pilot, Constants.OI_Map.BUTTON_X).whenPressed(() -> intake.set(-Constants.INTAKE_SPEED),m_Storage)
-      .whenReleased(() -> intake.set(Constants.INTAKE_SPEED), m_Storage);
-    pilot_ButtonA.whileHeld(() -> m_DriveTrain.arcadeDrive(0, 1), m_DriveTrain);
+      pilot_ButtonX.whenPressed(() -> intake.set(-Constants.INTAKE_SPEED),m_Storage)
+      .whenReleased(() -> intake.set(0), m_Storage);
+
+    pilot_ButtonA.whileHeld(() -> m_DriveTrain.arcadeDrive(0.0, 1.0), m_DriveTrain);
 
     CO_ButtonB.whileHeld(()-> {
       if(-COpilot.getY(GenericHID.Hand.kLeft) > 0.2){
