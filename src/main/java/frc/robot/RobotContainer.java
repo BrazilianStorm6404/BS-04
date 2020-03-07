@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -62,6 +63,7 @@ public class RobotContainer {
   private PowerDistributionPanel m_PDP;
 
   // COMMANDS
+  Shoot m_Shoot;
 
   // MOTORS
   WPI_VictorSPX intake;
@@ -123,14 +125,14 @@ public class RobotContainer {
       m_Storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
     }, m_Storage).whenReleased(() -> m_Storage.MoveBelt(0), m_Storage);
 
-    pilot_RB.whileHeld(new Shoot(m_Shooter, m_Storage, m_PDP))
-    .whenReleased(new RunCommand(()->{
+    pilot_RB.whileHeld(() -> CommandScheduler.getInstance().schedule(m_Shoot))
+    .whenReleased(/*new RunCommand(()->{
 
       m_Shooter.stopShooting();
       m_Shooter.stopBelt();
-      m_Storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
+      m_Storage.MoveBelt(0);
 
-    }, m_Shooter, m_Storage));
+    }, m_Shooter, m_Storage)*/() -> CommandScheduler.getInstance().cancel(m_Shoot));
 
   }
   //#endregion
@@ -144,6 +146,9 @@ public class RobotContainer {
     m_navx = new AHRS(SerialPort.Port.kUSB);
     m_DriveTrain = new Drivetrain(m_navx);
     m_PDP  = new PowerDistributionPanel(Constants.Ports.Sensors.PDP_PORT);
+
+    // COMMANDS
+    m_Shoot = new Shoot(m_Shooter, m_Storage, m_PDP);
   }
   
   //#region AUTONOMOUS
@@ -180,9 +185,9 @@ public class RobotContainer {
       new Pose2d(3, 0, new Rotation2d(0)),
       // Pass config
       config
-  );
+    );
 
-  RamseteCommand ramseteCommand = new RamseteCommand(
+    RamseteCommand ramseteCommand = new RamseteCommand(
       exampleTrajectory,
       m_DriveTrain::getPose,
       new RamseteController(Constants.Autonomous.kRamseteB, Constants.Autonomous.kRamseteZeta),
@@ -196,10 +201,11 @@ public class RobotContainer {
       // RamseteCommand passes volts to the callback
       m_DriveTrain::tankDriveVolts,
       m_DriveTrain
-  );
+    );
 
   // Run path following command, then stop at the end.
-  return ramseteCommand.andThen(() -> m_DriveTrain.tankDriveVolts(0, 0));
+    // Run path following command, then stop at the end.
+    return ramseteCommand.andThen(() -> m_DriveTrain.tankDriveVolts(0, 0));
     /*
     return new SequentialCommandGroup(
       new Straight(m_navx, m_DriveTrain, 0, 0.3)

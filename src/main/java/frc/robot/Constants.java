@@ -32,6 +32,7 @@ public final class Constants {
             
             
             public static final int INTAKE_OPTIC = 9;
+            public static final int SHOOTER_OPTIC = 10;
             public static final int STORAGE_OPTIC = 8; 
             public static final int SHOOTER_LIMIT_HIGH = 7;
             public static final int SHOOTER_LIMIT_LOW = 6;

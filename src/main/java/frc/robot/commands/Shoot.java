@@ -16,7 +16,8 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Storage;
 
 public class Shoot extends CommandBase {
-  
+
+  private boolean needToPull = true;
   private Shooter m_shooter;
   private Storage m_storage;
   private PowerDistributionPanel m_pdp;
@@ -40,7 +41,10 @@ public class Shoot extends CommandBase {
   @Override
   public void execute() {
     m_shooter.Shoot();
-    m_storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
+    
+    if (m_storage.getIRShooterValue() && needToPull) {
+      needToPull = false;   
+    }
 
     // Ajustar constante de corrente da Power Distribution Panel.
     // Verificar porta da PDP.
@@ -48,6 +52,7 @@ public class Shoot extends CommandBase {
     SmartDashboard.putNumber("motor", m_pdp.getCurrent(Constants.Ports.Motors.SHOOTER_SHOOT));
     if(m_pdp.getCurrent(Constants.Ports.Motors.SHOOTER_SHOOT)>10)
       m_storage.removePowerCells();
+      needToPull = true;
   }
 
   // Called once the command ends or is interrupted.
