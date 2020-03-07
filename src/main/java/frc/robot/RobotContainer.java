@@ -68,9 +68,6 @@ public class RobotContainer {
   private final Storage m_Storage = new Storage();
   private PowerDistributionPanel m_PDP;
 
-  // COMMANDS
-  Shoot m_Shoot;
-
   // MOTORS
   WPI_VictorSPX intake;
 
@@ -131,14 +128,14 @@ public class RobotContainer {
       m_Storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
     }, m_Storage).whenReleased(() -> m_Storage.MoveBelt(0), m_Storage);
 
-    pilot_RB.whileHeld(() -> CommandScheduler.getInstance().schedule(m_Shoot))
-    .whenReleased(/*new RunCommand(()->{
+    pilot_RB.whileHeld(new Shoot(m_Shooter, m_Storage, m_PDP))
+    .whenReleased(new RunCommand(()->{
 
       m_Shooter.stopShooting();
       m_Shooter.stopBelt();
       m_Storage.MoveBelt(0);
 
-    }, m_Shooter, m_Storage)*/() -> CommandScheduler.getInstance().cancel(m_Shoot));
+    }, m_Shooter, m_Storage));
 
   }
   //#endregion
@@ -154,7 +151,6 @@ public class RobotContainer {
     m_PDP  = new PowerDistributionPanel(Constants.Ports.Sensors.PDP_PORT);
 
     // COMMANDS
-    m_Shoot = new Shoot(m_Shooter, m_Storage, m_PDP);
   }
   
   //#region AUTONOMOUS
