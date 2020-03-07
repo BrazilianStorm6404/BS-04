@@ -30,7 +30,7 @@ public final class Constants {
         
         public static class Sensors {
             
-            
+            public static final int CLIMB_I2C_COLOR = 0;            
             public static final int INTAKE_OPTIC = 9;
             public static final int SHOOTER_OPTIC = 10;
             public static final int STORAGE_OPTIC = 8; 

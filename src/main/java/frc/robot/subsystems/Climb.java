@@ -9,26 +9,32 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.libs.sensorsIMPL.Color_REV_V3;
 
 public class Climb extends SubsystemBase {
   
   private WPI_VictorSPX frontClimb, backClimb, telescopic;
   private SpeedControllerGroup climb;
+  private Color_REV_V3 colorSensor;
 
   public Climb() {
     telescopic = new WPI_VictorSPX(Constants.Ports.Motors.CLIMB_TELESCOPIC);
     frontClimb = new WPI_VictorSPX(Constants.Ports.Motors.CLIMB_FRONT);
     backClimb = new WPI_VictorSPX(Constants.Ports.Motors.CLIMB_BACK);
     climb = new SpeedControllerGroup(frontClimb, backClimb);
+    colorSensor = new Color_REV_V3(I2C.Port.kOnboard);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    if (colorSensor.getActualColorName() == "Yellow") {
+      stopTelescopic();
+    }
   }
 
   public void setTelescopic(double speed) {
