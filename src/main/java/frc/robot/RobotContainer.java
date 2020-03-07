@@ -203,7 +203,6 @@ public class RobotContainer {
       m_DriveTrain
     );
 
-  // Run path following command, then stop at the end.
     // Run path following command, then stop at the end.
     return ramseteCommand.andThen(() -> m_DriveTrain.tankDriveVolts(0, 0));
     /*

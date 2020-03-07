@@ -41,12 +41,14 @@ public class Storage extends SubsystemBase {
     tabStorage = Shuffleboard.getTab("Storage");
     IR_detector = tabStorage.add("IR detector",false).getEntry();
     IR_verifier = tabStorage.add("IR verifier", false).getEntry();
-    PowerCellCount = tabStorage.add("Power cell count", 0).getEntry();
+    IR_shooter = tabStorage.add("IR shooter", false).getEntry();
+    PowerCellCount = tabStorage.add("Contagem de power cells", 0).getEntry();
   }
 
   @Override
   public void periodic() {
     IR_detector.setBoolean(this.getIRDetectorValue());
+    IR_shooter.setBoolean(this.getIRShooterValue());
     IR_verifier.setBoolean(this.getIRVerifierValue());
     PowerCellCount.forceSetNumber(this.getPowerCellCount());
   }
