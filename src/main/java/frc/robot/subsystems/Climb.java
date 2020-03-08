@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.libs.sensorsimpl.Color_REV_V3;
+import frc.robot.libs.sensorsIMPL.Color_REV_V3;
 
 public class Climb extends SubsystemBase {
 
