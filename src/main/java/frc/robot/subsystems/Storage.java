@@ -19,7 +19,7 @@ import frc.robot.Constants;
 
 public class Storage extends SubsystemBase {
 
-  private int powerCells = 0;
+  private int powerCells = 5;
 
   private ShuffleboardTab tabStorage;
 
