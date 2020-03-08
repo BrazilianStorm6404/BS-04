@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.libs.sensorsIMPL;
+package frc.robot.libs.sensorsimpl;
 
 import java.util.ArrayList;
 
