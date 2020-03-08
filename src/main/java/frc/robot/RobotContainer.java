@@ -121,6 +121,8 @@ public class RobotContainer {
     CO_ButtonB.whileHeld(()-> {
       if(-COpilot.getY(GenericHID.Hand.kLeft) > 0.2){
         m_Climb.climb();
+      } else if(COpilot.getY(GenericHID.Hand.kLeft) > 0.2){
+        m_Climb.inverseClimb();
       }
       else m_Climb.stopClimb();
     }, m_Climb)

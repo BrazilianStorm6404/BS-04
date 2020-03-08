@@ -89,6 +89,7 @@ public class Shooter extends SubsystemBase {
 	
 	public void stopShooting() {
 		shoot.set(ControlMode.PercentOutput, 0);
+		belt.set(0);
 	}
 
 	public void stopBelt() {

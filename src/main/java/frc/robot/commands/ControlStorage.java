@@ -14,8 +14,11 @@ import frc.robot.subsystems.Storage;
 public class ControlStorage extends CommandBase {
 
 	private Storage m_storage;
-	private boolean intake = false;
-	private boolean verifier = false;
+	private boolean s0, lastS0 = false;
+	private boolean s1, lastS1 = false;
+	private boolean pulling = false;
+	private int i = 0;
+	private boolean considerGap = false;
 
 	public ControlStorage(Storage Storage) {
 		addRequirements(Storage);
@@ -30,10 +33,40 @@ public class ControlStorage extends CommandBase {
 	// Called every time the scheduler runs while the command is scheduled.
 	@Override
 	public void execute() {
-		intake = m_storage.getIRDetectorValue();
-		verifier = m_storage.getIRVerifierValue();
+		s0 = m_storage.getIRDetectorValue();
+		s1 = m_storage.getIRVerifierValue();
 
-		m_storage.MoveBelt(0.0);
+		if (s0) {
+			pulling = true;
+			if (!m_storage.balls[0]) {
+				if (!(s1 && (!lastS1))) {
+					m_storage.balls[i] = true;
+					i++;
+					considerGap = false;
+				}
+			} else {
+				considerGap = true;
+			}
+		} else {
+			pulling = false;
+			if (considerGap) {
+				if (s0 && (!lastS0)) {
+					m_storage.MoveBelt(0);
+					m_storage.balls[i]  = true;
+					i++;
+					considerGap = false;
+				}
+			}
+		}
+
+		if (pulling) {
+			m_storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
+		} else {
+			m_storage.MoveBelt(0.0);
+		}
+
+		s0 = m_storage.getIRDetectorValue();
+		s1 = m_storage.getIRVerifierValue();
 		// m_storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
 		/*
 		if(intake) {

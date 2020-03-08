@@ -66,6 +66,10 @@ public class Climb extends SubsystemBase {
     climb.set(Constants.CLIMB_SPEED);
   }  
   
+  public void inverseClimb (){
+    climb.set(Constants.CLIMB_SPEED * -1);
+  }  
+
   public void stopClimb (){
     climb.set(0);
   }

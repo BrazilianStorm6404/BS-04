@@ -21,12 +21,16 @@ public class Shoot extends CommandBase {
   private Shooter m_shooter;
   private Storage m_storage;
   private PowerDistributionPanel m_pdp;
+  private int i = 0;
+  private Timer t;
 
   public Shoot(Shooter Shooter, Storage Storage, PowerDistributionPanel PDP) {
     addRequirements(Shooter,Storage);
     m_shooter = Shooter;
     m_storage = Storage;
     m_pdp = PDP;
+    t = new Timer();
+    t.start();
   }
 
 
@@ -48,12 +52,22 @@ public class Shoot extends CommandBase {
     // Ajustar constante de corrente da Power Distribution Panel.
     // Verificar porta da PDP.
     //***
-    SmartDashboard.putNumber("motor", m_pdp.getCurrent(Constants.Ports.Motors.SHOOTER_SHOOT));
-    if(m_pdp.getCurrent(Constants.Ports.Motors.SHOOTER_SHOOT)>10) {
+    SmartDashboard.putNumber("pdp", m_pdp.getCurrent(2));
+    SmartDashboard.putNumber("timer", t.get());
+    if(m_pdp.getCurrent(2)>40 && t.get() > 0.3) {
+      t.reset();
       m_storage.removePowerCells();
       needToPull = true;
+      i++;
+    }
+    SmartDashboard.putBoolean("needToPull", needToPull);
+
+    if (m_storage.getIRShooterValue()) {
+      t.reset();
     }
       
+    m_shooter.Shoot();
+    /*
     if (needToPull) {
       m_shooter.stopShooting();
       m_storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
@@ -61,6 +75,7 @@ public class Shoot extends CommandBase {
       m_shooter.Shoot();
       m_storage.MoveBelt(0.0);
     }
+    */
     
   }
 
