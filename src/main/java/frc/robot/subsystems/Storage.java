@@ -19,7 +19,7 @@ import frc.robot.Constants;
 
 public class Storage extends SubsystemBase {
 
-  private int powerCells = 0;
+  private int powerCells = 3;
 
   private ShuffleboardTab tabStorage;
 
@@ -58,7 +58,7 @@ public class Storage extends SubsystemBase {
   }
 
   public boolean getIRDetectorValue(){
-    return IR_intake_detector.get();
+    return !IR_intake_detector.get();
   }
 
   public boolean getIRVerifierValue() {

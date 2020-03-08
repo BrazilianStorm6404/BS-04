@@ -40,7 +40,6 @@ public class Shoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.Shoot();
     
     if (m_storage.getIRShooterValue() && needToPull) {
       needToPull = false;   
@@ -50,9 +49,19 @@ public class Shoot extends CommandBase {
     // Verificar porta da PDP.
     //***
     SmartDashboard.putNumber("motor", m_pdp.getCurrent(Constants.Ports.Motors.SHOOTER_SHOOT));
-    if(m_pdp.getCurrent(Constants.Ports.Motors.SHOOTER_SHOOT)>10)
+    if(m_pdp.getCurrent(Constants.Ports.Motors.SHOOTER_SHOOT)>10) {
       m_storage.removePowerCells();
       needToPull = true;
+    }
+      
+    if (needToPull) {
+      m_shooter.stopShooting();
+      m_storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
+    } else {
+      m_shooter.Shoot();
+      m_storage.MoveBelt(0.0);
+    }
+    
   }
 
   // Called once the command ends or is interrupted.

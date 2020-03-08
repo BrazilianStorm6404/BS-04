@@ -33,13 +33,16 @@ public class ControlStorage extends CommandBase {
 		intake = m_storage.getIRDetectorValue();
 		verifier = m_storage.getIRVerifierValue();
 
-		m_storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
+		m_storage.MoveBelt(0.0);
+		// m_storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
+		/*
 		if(intake) {
 			m_storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
 		} else if(!intake && verifier) {
 			m_storage.MoveBelt(0.0);
 			m_storage.addPowerCells();
 		}
+		*/
 	}
 
 	// Called once the command ends or is interrupted.

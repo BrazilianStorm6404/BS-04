@@ -18,7 +18,7 @@ public final class Constants {
     public static final double SHOOTING_SPEED = 1;
     public static final double INTAKE_SPEED = 1;
     public static final double SHOOTER_BELT_SPEED = 1;
-    public static final double STORAGE_BELT_SPEED = 0.4;
+    public static final double STORAGE_BELT_SPEED = -0.4;
     public static final double STORAGE_MIN_PIXY_AREA = 100;
     //PID
     public static final double DRIVE_kP = 0.03, DRIVE_kI = 0.00003, DRIVE_kD = 0.006;
@@ -31,9 +31,9 @@ public final class Constants {
         public static class Sensors {
             
             public static final int CLIMB_I2C_COLOR = 0;            
-            public static final int INTAKE_OPTIC = 9;
+            public static final int INTAKE_OPTIC = 8;
             public static final int SHOOTER_OPTIC = 4;
-            public static final int STORAGE_OPTIC = 8; 
+            public static final int STORAGE_OPTIC = 9; 
             public static final int SHOOTER_LIMIT_HIGH = 7;
             public static final int SHOOTER_LIMIT_LOW = 6;
             public static final int DRIVE_ENC_LEFT_A = 0;
