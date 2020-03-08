@@ -54,7 +54,7 @@ public class Storage extends SubsystemBase {
   }
 
   public void MoveBelt(double speed){
-    belt.set(ControlMode.PercentOutput, speed * Constants.STORAGE_BELT_SPEED);
+    belt.set(speed);
   }
 
   public boolean getIRDetectorValue(){

@@ -60,7 +60,7 @@ public class Shoot extends CommandBase {
   public void end(boolean interrupted) {
     m_storage.shoot = false;
     m_shooter.stopShooting();
-    m_storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
+    m_storage.MoveBelt(0);
   }
 
   // Returns true when the command should end.

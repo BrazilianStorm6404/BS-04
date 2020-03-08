@@ -128,14 +128,14 @@ public class RobotContainer {
       m_Storage.MoveBelt(Constants.STORAGE_BELT_SPEED);
     }, m_Storage).whenReleased(() -> m_Storage.MoveBelt(0), m_Storage);
 
-    pilot_RB.whileHeld(new Shoot(m_Shooter, m_Storage, m_PDP))
+    pilot_RB.whileHeld(/*new Shoot(m_Shooter, m_Storage, m_PDP))
     .whenReleased(new RunCommand(()->{
 
       m_Shooter.stopShooting();
       m_Shooter.stopBelt();
       m_Storage.MoveBelt(0);
 
-    }, m_Shooter, m_Storage));
+    }, m_Shooter, m_Storage)*/ () -> m_Shooter.Shoot());
 
   }
   //#endregion

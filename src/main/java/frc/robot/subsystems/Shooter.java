@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -21,7 +22,7 @@ import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
 
-	private VictorSPX angle, shoot;
+	private WPI_VictorSPX angle, shoot;
 	private VictorSP belt;
 
 	private NetworkTableEntry entryGyro, entryLimitHigh, entryLimitLow;
@@ -32,9 +33,9 @@ public class Shooter extends SubsystemBase {
 	private DigitalInput limitLow;
 
 	public Shooter() {
-		angle = new VictorSPX(Constants.Ports.Motors.SHOOTER_ANGLE);
+		angle = new WPI_VictorSPX(Constants.Ports.Motors.SHOOTER_ANGLE);
 		belt = new VictorSP(Constants.Ports.Motors.SHOOTER_BELT);
-		shoot = new VictorSPX(Constants.Ports.Motors.SHOOTER_SHOOT);
+		shoot = new WPI_VictorSPX(Constants.Ports.Motors.SHOOTER_SHOOT);
 
 		gyro = new ADXRS450_Gyro();
 		limitHigh = new DigitalInput(Constants.Ports.Sensors.SHOOTER_LIMIT_HIGH);
@@ -68,14 +69,12 @@ public class Shooter extends SubsystemBase {
 	}
 
 	public void Shoot() {
-		shoot.set(ControlMode.PercentOutput, Constants.SHOOTING_SPEED);
+		shoot.set( Constants.SHOOTING_SPEED);
 		belt.set(Constants.SHOOTER_BELT_SPEED);
 	}
 
 	public void moveUp() {
-		double speed = Constants.SHOOTER_ANGLE_SPEED;
-
-		angle.set(ControlMode.PercentOutput, speed);
+		angle.set(Constants.SHOOTER_ANGLE_SPEED);
 	}
 
 	public void moveDown() {
