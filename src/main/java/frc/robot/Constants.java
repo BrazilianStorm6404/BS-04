@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 
 public final class Constants {
 
+    // MOTOR VELOCITY
     public static final double SHOOTER_ANGLE_SPEED = 0.5;
     public static final double CLIMB_SPEED = 1;
     public static final double TELESCOPIC_SPEED_RAISE = 0.9;
@@ -19,15 +20,16 @@ public final class Constants {
     public static final double INTAKE_SPEED = 1;
     public static final double SHOOTER_BELT_SPEED = 1;
     public static final double STORAGE_BELT_SPEED = -0.4;
-    public static final double STORAGE_MIN_PIXY_AREA = 100;
+
     //PID
     public static final double DRIVE_kP = 0.03, DRIVE_kI = 0.00003, DRIVE_kD = 0.006;
 
     public static final double SHOOTER_kP = 0, SHOOTER_kI=0, SHOOTER_kD = 0;
 
+    // PIXY CAM
+    public static final double STORAGE_MIN_PIXY_AREA = 100;
     
     public static class Ports{
-        
         public static class Sensors {
             
             public static final int CLIMB_I2C_COLOR = 0;            
@@ -52,20 +54,20 @@ public final class Constants {
             public static final int DRIVE_RIGHT_FRONT = 1;
             public static final int DRIVE_RIGHT_BACK = 0;
 
-            public static final int SHOOTER_BELT = 9;
+            public static final int SHOOTER_BELT = 9; 
 
-            // CAN
-            public static final int CLIMB_FRONT = 0;
-            public static final int CLIMB_BACK = 1;
-            public static final int CLIMB_TELESCOPIC = 2;
+            //CAN
+            public static final int INTAKE_ANGLE = 4; 
+            public static final int INTAKE_COLLECTOR = 6; 
+
+            public static final int STORAGE_BELT = 10; 
+            public static final int SHOOTER_SHOOT = 11;
+
+            public static final int SHOOTER_ANGLE = 4;
             
-            public static final int INTAKE_JOINT = -1;
-            public static final int INTAKE_COLLECTOR = 3;
-
-            public static final int STORAGE_BELT = 4;
-
-            public static final int SHOOTER_SHOOT = 5;
-            public static final int SHOOTER_ANGLE = 6;
+            public static final int CLIMB_TELESCOPIC = 3;
+            public static final int CLIMB_BACK = 2;
+            public static final int CLIMB_FRONT = 1;
 
         }
     }
@@ -88,7 +90,6 @@ public final class Constants {
         
         // DISTANCE TO SHOT
         public static final double MIN_DIST_TO_SHOOT = 0, MAX_DIST_TO_SHOOT = 0;
-        
         
         // Constantes provindas do FRC-Characterization
         // Não foram definidas ainda.

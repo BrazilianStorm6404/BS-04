@@ -17,12 +17,13 @@ import frc.robot.subsystems.Storage;
 
 public class Shoot extends CommandBase {
 
+  //#region Sensors, controllers & etc.
   private boolean needToPull = true;
   private Shooter m_shooter;
   private Storage m_storage;
   private PowerDistributionPanel m_pdp;
-  private int i = 0;
   private Timer t;
+  //#endregion
 
   public Shoot(Shooter Shooter, Storage Storage, PowerDistributionPanel PDP) {
     addRequirements(Shooter,Storage);
@@ -58,7 +59,6 @@ public class Shoot extends CommandBase {
       t.reset();
       m_storage.removePowerCells();
       needToPull = true;
-      i++;
     }
     SmartDashboard.putBoolean("needToPull", needToPull);
 

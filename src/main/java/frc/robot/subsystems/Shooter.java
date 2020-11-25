@@ -22,7 +22,8 @@ import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
 
-	private VictorSPX angle, shoot;
+	//#region Sensors, controllers & etc.
+	private WPI_VictorSPX angle, shoot;
 	private VictorSP belt;
 
 	private NetworkTableEntry entryGyro, entryLimitHigh, entryLimitLow;
@@ -31,18 +32,24 @@ public class Shooter extends SubsystemBase {
 	private ADXRS450_Gyro gyro;
 	private DigitalInput limitHigh;
 	private DigitalInput limitLow;
+	//#endregion
 
 	public Shooter() {
-		angle = new VictorSPX(Constants.Ports.Motors.SHOOTER_ANGLE);
+		// Motors
+		angle = new WPI_VictorSPX(Constants.Ports.Motors.SHOOTER_ANGLE);
+		shoot = new WPI_VictorSPX(Constants.Ports.Motors.SHOOTER_SHOOT);
 		belt = new VictorSP(Constants.Ports.Motors.SHOOTER_BELT);
-		shoot = new VictorSPX(Constants.Ports.Motors.SHOOTER_SHOOT);
 
+		// Sensors
 		gyro = new ADXRS450_Gyro();
 		limitHigh = new DigitalInput(Constants.Ports.Sensors.SHOOTER_LIMIT_HIGH);
 		limitLow = new DigitalInput(Constants.Ports.Sensors.SHOOTER_LIMIT_LOW);
+
+		// Set the values to inverted
 		belt.setInverted(true);
 		angle.setInverted(true);
 
+		// Shuffleboard
 		tabShooter = Shuffleboard.getTab("Shooter");
 		entryLimitHigh = tabShooter.add("Limit Cima", false).getEntry();
 		entryLimitLow = tabShooter.add("Limit Baixo", false).getEntry();
@@ -55,53 +62,100 @@ public class Shooter extends SubsystemBase {
 			gyro.reset();
 		}
 
+		// Set values in shuffleboard
 		entryLimitHigh.setBoolean(this.getLimitHigh());
 		entryLimitLow.setBoolean(this.getLimitLow());
 		entryGyro.forceSetDouble(this.getGyroAngle());
 	}
 
-	public boolean getLimitLow() {
-		return limitLow.get();
-	}
-
-	public boolean getLimitHigh() {
-		return limitHigh.get();
-	}
-
+	//#region SHOOTER
+	/**
+	 * Set the values to shoot the shooter
+	 */
 	public void Shoot() {
-		shoot.set(ControlMode.PercentOutput,Constants.SHOOTING_SPEED);
+		shoot.set(-Constants.SHOOTING_SPEED);
 		belt.set(Constants.SHOOTER_BELT_SPEED);
 	}
 
+	/**
+	 * Set all motor values to 0
+	 */
+	public void Stop() {
+		stopMoving();
+		stopShooting();
+	}
+
+	/**
+	 * set the angle to the constant defined in Constants
+	 */
 	public void moveUp() {
-		angle.set(ControlMode.PercentOutput, Constants.SHOOTER_ANGLE_SPEED);
+		angle.set(Constants.SHOOTER_ANGLE_SPEED);
 	}
 
+	/**
+	 * set the angle to the constant defined in Constants in negative
+	 */
 	public void moveDown() {
-		double speed = Constants.SHOOTER_ANGLE_SPEED * -1;
-
-		angle.set(ControlMode.PercentOutput, speed);
+		angle.set(-Constants.SHOOTER_ANGLE_SPEED);
 	}
 
+	/**
+	 * set the angle to 0
+	 */
 	public void stopMoving() {
-		angle.set(ControlMode.PercentOutput, 0);
-	}
-	
-	public void stopShooting() {
-		shoot.set(ControlMode.PercentOutput, 0);
-		belt.set(0);
+		angle.set(0);
 	}
 
+	/**
+	 * set the shoot and belt to 0
+	 */
+	public void stopShooting() {
+		shoot.set(0);
+		stopBelt();
+	}
+
+	/**
+	 * set the belt to 0
+	 */
 	public void stopBelt() {
 		belt.set(0);
 	}
 
+	/**
+	 * set the belt to the constant defined in Constants
+	 */
 	public void moveBelt() {
 		belt.set(Constants.SHOOTER_BELT_SPEED);
 	}
 
+	//#endregion
+
+	//#region ANGLES
+
+	/**
+	 * Gets the angle of the gyro
+	 * @return the angle of the gyro
+	 */
 	public double getGyroAngle() {
 		return gyro.getAngle();
 	}
+
+	/**
+	 * Gets the value of the lower limit
+	 * @return the value of the lower limit
+	 */
+	public boolean getLimitLow() {
+		return limitLow.get();
+	}
+
+	/**
+	 * Gets the value of the upper limit
+	 * @return the value of the upper limit
+	 */
+	public boolean getLimitHigh() {
+		return limitHigh.get();
+	}
+
+	//#endregion
 
 }
