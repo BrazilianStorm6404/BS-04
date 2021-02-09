@@ -167,6 +167,8 @@ public class RobotContainer {
   //#region AUTONOMOUS
   public Command getAutonomousCommand() {
     m_navx.reset();
+    m_DriveTrain.resetEncoders();
+    m_DriveTrain.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
     // Implementar rotina autônoma.
     //*** */
     //#region PATHWEAVER
@@ -185,10 +187,11 @@ public class RobotContainer {
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(Constants.Autonomous.kDriveKinematics)
             // Apply the voltage constraint
-            .addConstraint(autoVoltageConstraint);
+            .addConstraint(autoVoltageConstraint)
+            .setReversed(true);
 
     // An example trajectory to follow.  All units in meters.
-    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+    Trajectory trajectory = /*new Trajectory();*/TrajectoryGenerator.generateTrajectory(
       // Start at the origin facing the +X direction
       new Pose2d(0, 0, new Rotation2d(0)),
       // Pass through these two interior waypoints, making an 's' curve path
@@ -202,14 +205,14 @@ public class RobotContainer {
       config
     );
 
-    String trajectoryJSON = "paths/Autoline to Shoot.wpilib.json";
+    /*String trajectoryJSON = "output/um.wpilib.json";
 
     try {
       Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
       trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
     } catch (IOException ex) {
       DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
-    }
+    }*/
 
     RamseteCommand ramseteCommand = new RamseteCommand(
       trajectory,
@@ -228,8 +231,9 @@ public class RobotContainer {
     );
 
     // Run path following command, then stop at the end.
-    return new SequentialCommandGroup(ramseteCommand.andThen(() -> m_DriveTrain.tankDriveVolts(0, 0)),
-    new AutoShoot(m_Shooter, m_Storage, m_PDP));
+    return new SequentialCommandGroup(ramseteCommand.andThen(() -> { m_DriveTrain.tankDriveVolts(0, 0);
+    intake.set(1);}));
+    //new AutoShoot(m_Shooter, m_Storage, m_PDP));
     /*
     return new SequentialCommandGroup(
       new Straight(m_navx, m_DriveTrain, 0, 0.3)

@@ -38,7 +38,7 @@ public class Drivetrain extends PIDSubsystem {
 
   //SHUFFLEBOARD
   private ShuffleboardTab drivetrainTab;
-  private NetworkTableEntry encoderLeftEntry, encoderRightEntry;
+  private NetworkTableEntry encoderLeftEntry, encoderRightEntry, pose2dX, pose2dY,navXdata;
   //#endregion
   
   public Drivetrain(AHRS navX) {
@@ -48,20 +48,21 @@ public class Drivetrain extends PIDSubsystem {
     _navX = navX;
 
     // Left encoder
-    encoderLeft = new Encoder(Constants.Ports.Sensors.DRIVE_ENC_LEFT_A, Constants.Ports.Sensors.DRIVE_ENC_LEFT_B, false);
-    encoderLeft.setDistancePerPulse(Math.PI * 4 * 2.54 / 360.0);
+    encoderLeft = new Encoder(Constants.Ports.Sensors.DRIVE_ENC_LEFT_A, Constants.Ports.Sensors.DRIVE_ENC_LEFT_B, Constants.Sensors_Values.ENC_LEFT_REVERSE);
+    encoderLeft.setDistancePerPulse(Constants.Sensors_Values.ENC_DISTANCE_PER_PULSE);
     encoderLeft.setMinRate(1.0);
     encoderLeft.setSamplesToAverage(5);
 
     // Right encoder
-    encoderRight = new Encoder(Constants.Ports.Sensors.DRIVE_ENC_RIGHT_A, Constants.Ports.Sensors.DRIVE_ENC_RIGHT_B, false);
-    encoderRight.setDistancePerPulse(Math.PI * 4 * 2.54 / 360.0);
+    encoderRight = new Encoder(Constants.Ports.Sensors.DRIVE_ENC_RIGHT_A, Constants.Ports.Sensors.DRIVE_ENC_RIGHT_B, Constants.Sensors_Values.ENC_RIGHT_REVERSE);
+    encoderRight.setDistancePerPulse(Constants.Sensors_Values.ENC_DISTANCE_PER_PULSE);
     encoderRight.setMinRate(1.0);
     encoderRight.setSamplesToAverage(5);
 
     // Sparks
     _leftFront = new Spark(Constants.Ports.Motors.DRIVE_LEFT_FRONT);
     _leftBack = new Spark(Constants.Ports.Motors.DRIVE_LEFT_BACK);
+
     _rightFront = new Spark(Constants.Ports.Motors.DRIVE_RIGHT_FRONT);
     _rightBack = new Spark(Constants.Ports.Motors.DRIVE_RIGHT_BACK);
 
@@ -79,6 +80,9 @@ public class Drivetrain extends PIDSubsystem {
     drivetrainTab = Shuffleboard.getTab("Tração");
     encoderLeftEntry = drivetrainTab.add("Encoder Esquerdo", 0.0).getEntry();
     encoderRightEntry = drivetrainTab.add("Encoder Direito", 0.0).getEntry();
+    pose2dX = drivetrainTab.add("Pose 2D X",0.0).getEntry();
+    pose2dY = drivetrainTab.add("Pose 2D Y",0.0).getEntry();
+    navXdata = drivetrainTab.add("NavX Data",0.0).getEntry();
   }
 
   @Override
@@ -87,10 +91,12 @@ public class Drivetrain extends PIDSubsystem {
     //Shuffle
     encoderLeftEntry.forceSetDouble(this.getEncoderLeft());
     encoderRightEntry.forceSetDouble(this.getEncoderRight());
+    pose2dX.forceSetDouble(m_odometry.getPoseMeters().getX());
+    pose2dY.forceSetDouble(m_odometry.getPoseMeters().getY());
+    navXdata.forceSetDouble(_navX.getYaw());
 
     // Atualização de odometria para PathWeaver
-    m_odometry.update(Rotation2d.fromDegrees(getHeading()), encoderLeft.getDistance(),
-                      encoderRight.getDistance());
+    m_odometry.update(Rotation2d.fromDegrees(getHeading()), encoderLeft.getDistance(), encoderRight.getDistance());
   }
 
   //#region Funções utilitárias para PathWeaver
@@ -132,8 +138,8 @@ public class Drivetrain extends PIDSubsystem {
    * @param rightVolts voltagem do grupo direito
    */
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    _left.setVoltage(leftVolts);
-    _right.setVoltage(-rightVolts);
+    _left.setVoltage(-leftVolts);
+    _right.setVoltage(rightVolts);
     m_drive.feed();
   }
 
@@ -178,7 +184,7 @@ public class Drivetrain extends PIDSubsystem {
    * @return the value of the heading of the robot
    */
   public double getHeading() {
-    return Math.IEEEremainder(this._navX.getYaw(), 360);
+    return Math.IEEEremainder(this._navX.getYaw(), 360);// * -1.0d;
   }
 
   /**

@@ -85,6 +85,12 @@ public final class Constants {
         public static final int BUTTON_RIGHT = 6;
         
     }
+
+    public static class Sensors_Values {
+        public static final boolean ENC_RIGHT_REVERSE = false;
+        public static final boolean ENC_LEFT_REVERSE = true;
+        public static final double ENC_DISTANCE_PER_PULSE = Math.PI * 2.54 / 240; //Math.PI * 4 *2.54 / 360
+    }
     
     public static class Autonomous{
         
@@ -102,6 +108,7 @@ public final class Constants {
         new DifferentialDriveKinematics(kTrackwidthMeter);
         public static final double kMaxSpeedMetersPerSecond = 3;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+        // WPILIB recomenda esses 2 valores para o Ramsete
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
 
