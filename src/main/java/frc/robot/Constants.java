@@ -89,7 +89,7 @@ public final class Constants {
     public static class Sensors_Values {
         public static final boolean ENC_RIGHT_REVERSE = false;
         public static final boolean ENC_LEFT_REVERSE = true;
-        public static final double ENC_DISTANCE_PER_PULSE = Math.PI * 2.54 / 240; //Math.PI * 4 *2.54 / 360
+        public static final double ENC_DISTANCE_PER_PULSE = Math.PI * 2.54 / 6000; //Math.PI * 4 *2.54 / 360
     }
     
     public static class Autonomous{
@@ -99,11 +99,11 @@ public final class Constants {
         
         // Constantes provindas do FRC-Characterization
         // Não foram definidas ainda.
-        public static final double ksVolts = 0.833;
-        public static final double kvVoltSecondsPerMeter = 3.19;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.294;
-        public static final double kPDriveVel = 11;
-        public static final double kTrackwidthMeter = 0.65;
+        public static final double ksVolts = 1.85;//2.28;//0.833;
+        public static final double kvVoltSecondsPerMeter = 2.82;//2.74;//3.19;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.0239;//0.0164;//0.294;
+        public static final double kPDriveVel = 0.0204;//0.204;//0.00804;//11;
+        public static final double kTrackwidthMeter = 1.37342683;//0.65;
         public static final DifferentialDriveKinematics kDriveKinematics =
         new DifferentialDriveKinematics(kTrackwidthMeter);
         public static final double kMaxSpeedMetersPerSecond = 3;

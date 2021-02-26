@@ -9,39 +9,42 @@ package frc.robot;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Path;
-import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ControlStorage;
 import frc.robot.commands.Shoot;
-import frc.robot.libs.auto.shoot.AutoShoot;
+import frc.robot.commands.driveCommand;
+import frc.robot.commands.driveCommand2;
+import frc.robot.commands.resetCommand;
+import frc.robot.commands.turnCommand;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
@@ -52,25 +55,26 @@ public class RobotContainer {
 
   //#region VARIABLES, SUBSYSTEMS, CONTROLLERS, ...
   // controles do piloto e copiloto
-  private XboxController pilot, COpilot;
+  private XboxController pilot;//, COpilot;
 
   // Botoões utilizados do piloto
   private JoystickButton pilot_RB, pilot_ButtonA, pilot_ButtonX;
 
   // Botoões utilizados do copiloto
-  private JoystickButton CO_ButtonX, CO_ButtonB, CO_ButtonY;
+  //private JoystickButton CO_ButtonX, CO_ButtonB, CO_ButtonY;
 
   // Sensores
   private AHRS m_navx;
+  private Gyro gyro;
   //This must be refactored
   //private Encoder_AMT103 encoderT1;
-  private PowerDistributionPanel m_PDP;
+  //private PowerDistributionPanel m_PDP;
 
   // Subsystemas
-  private final Climb m_Climb = new Climb();
+  //private final Climb m_Climb = new Climb();
   private Drivetrain m_DriveTrain;
-  private final Shooter m_Shooter = new Shooter();
-  private final Storage m_Storage = new Storage();
+  //private final Shooter m_Shooter = new Shooter();
+  //private final Storage m_Storage = new Storage();
 
   // MOTORS
   WPI_VictorSPX intake;
@@ -98,15 +102,15 @@ public class RobotContainer {
    */
   public void setControllers() {
     pilot = new XboxController(Constants.OI_Map.PILOT);
-    pilot_RB = new JoystickButton(pilot, Constants.OI_Map.BUTTON_RIGHT);
+    //pilot_RB = new JoystickButton(pilot, Constants.OI_Map.BUTTON_RIGHT);
     pilot_ButtonA = new JoystickButton(pilot, Constants.OI_Map.BUTTON_A);
-    pilot_ButtonX = new JoystickButton(pilot, Constants.OI_Map.BUTTON_X);
+    //pilot_ButtonX = new JoystickButton(pilot, Constants.OI_Map.BUTTON_X);
     //pilot_ButtonB  = new JoystickButton(pilot, Constants.OI_Map.BUTTON_B);
 
-    COpilot = new XboxController(Constants.OI_Map.COPILOT);
-    CO_ButtonX = new JoystickButton(COpilot, Constants.OI_Map.BUTTON_X);
-    CO_ButtonB = new JoystickButton(COpilot, Constants.OI_Map.BUTTON_B);
-    CO_ButtonY = new JoystickButton(COpilot, Constants.OI_Map.BUTTON_Y);
+    //COpilot = new XboxController(Constants.OI_Map.COPILOT);
+    //CO_ButtonX = new JoystickButton(COpilot, Constants.OI_Map.BUTTON_X);
+    //CO_ButtonB = new JoystickButton(COpilot, Constants.OI_Map.BUTTON_B);
+    //CO_ButtonY = new JoystickButton(COpilot, Constants.OI_Map.BUTTON_Y);
   }
   //#endregion
 
@@ -137,7 +141,7 @@ public class RobotContainer {
     .whenReleased(()-> m_Climb.stopClimb(), m_Climb);*/
 
     // Botão INTAKE
-    pilot_ButtonA.whenPressed(() -> intake.set(-Constants.INTAKE_SPEED),m_Storage)
+    /*pilot_ButtonA.whenPressed(() -> intake.set(-Constants.INTAKE_SPEED),m_Storage)
             .whenReleased(() -> intake.set(0), m_Storage);
 
     // Botão STORAGE/CONVEYOR
@@ -146,7 +150,16 @@ public class RobotContainer {
 
     // Botão SHOOTER
     pilot_RB.whileHeld(new Shoot(m_Shooter, m_Storage, m_PDP))
-            .whenReleased(() -> m_Shooter.Stop());
+            .whenReleased(() -> m_Shooter.Stop());*/
+  
+    pilot_ButtonA.whenHeld(
+      new SequentialCommandGroup(
+        new driveCommand(m_DriveTrain, 2.6),
+        new resetCommand(m_DriveTrain),
+        new driveCommand(m_DriveTrain, 2.7)
+        )
+      );
+
 
   }
   //#endregion
@@ -159,7 +172,8 @@ public class RobotContainer {
     // SENSORS
     m_navx = new AHRS(SerialPort.Port.kUSB);
     m_DriveTrain = new Drivetrain(m_navx);
-    m_PDP  = new PowerDistributionPanel(Constants.Ports.Sensors.PDP_PORT);
+    gyro = new ADXRS450_Gyro();
+    //m_PDP  = new PowerDistributionPanel(Constants.Ports.Sensors.PDP_PORT);
 
     // COMMANDS
   }
@@ -168,32 +182,38 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     m_navx.reset();
     m_DriveTrain.resetEncoders();
-    m_DriveTrain.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
     // Implementar rotina autônoma.
     //*** */
     //#region PATHWEAVER
     // An ExampleCommand will run in autonomous
 
-    var autoVoltageConstraint = 
+    // Create a voltage constraint to ensure we don't accelerate too fast
+    /*var autoVoltageConstraint = 
       new DifferentialDriveVoltageConstraint(
         new SimpleMotorFeedforward(Constants.Autonomous.ksVolts, 
         Constants.Autonomous.kvVoltSecondsPerMeter, Constants.Autonomous.kaVoltSecondsSquaredPerMeter),
         Constants.Autonomous.kDriveKinematics,
         10);
       
-    TrajectoryConfig config =
+    // Create config for trajectory   
+    /*TrajectoryConfig config =
         new TrajectoryConfig(Constants.Autonomous.kMaxSpeedMetersPerSecond,
                             Constants.Autonomous.kMaxAccelerationMetersPerSecondSquared)
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(Constants.Autonomous.kDriveKinematics)
             // Apply the voltage constraint
             .addConstraint(autoVoltageConstraint)
-            .setReversed(true);
+            .setReversed(true);*/
 
     // An example trajectory to follow.  All units in meters.
-    Trajectory trajectory = /*new Trajectory();*/TrajectoryGenerator.generateTrajectory(
+    //Trajectory trajectory = new Trajectory();
+    /*TrajectoryGenerator.generateTrajectory(
       // Start at the origin facing the +X direction
-      new Pose2d(0, 0, new Rotation2d(0)),
+      List.of( 
+        new Pose2d(0, 0, new Rotation2d(0)),
+        new Pose2d(0, 3, new Rotation2d(0)),
+        new Pose2d(3, 0, new Rotation2d(0))
+        ),
       // Pass through these two interior waypoints, making an 's' curve path
       List.of(
           new Translation2d(1, 1),
@@ -203,17 +223,18 @@ public class RobotContainer {
       new Pose2d(3, 0, new Rotation2d(0)),
       // Pass config
       config
-    );
-
-    /*String trajectoryJSON = "output/um.wpilib.json";
+    );*/
+    /*
+    String trajectoryJSON = "output/Unnamed.wpilib.json";
 
     try {
       Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
       trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      m_DriveTrain.resetOdometry(trajectory.getInitialPose());
     } catch (IOException ex) {
       DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
-    }*/
-
+    }//*/
+    /*
     RamseteCommand ramseteCommand = new RamseteCommand(
       trajectory,
       m_DriveTrain::getPose,
@@ -223,22 +244,24 @@ public class RobotContainer {
                                 Constants.Autonomous.kaVoltSecondsSquaredPerMeter),
       Constants.Autonomous.kDriveKinematics,
       m_DriveTrain::getWheelSpeeds,
-      new PIDController(Constants.Autonomous.kPDriveVel, 0, 0),
-      new PIDController(Constants.Autonomous.kPDriveVel, 0, 0),
+      new PIDController(0.294, 0, 0.001),//.001),
+      new PIDController(0.294, 0, 0.001),//.001),
       // RamseteCommand passes volts to the callback
       m_DriveTrain::tankDriveVolts,
       m_DriveTrain
-    );
-
+    );*/
     // Run path following command, then stop at the end.
-    return new SequentialCommandGroup(ramseteCommand.andThen(() -> { m_DriveTrain.tankDriveVolts(0, 0);
-    intake.set(1);}));
-    //new AutoShoot(m_Shooter, m_Storage, m_PDP));
-    /*
-    return new SequentialCommandGroup(
-      new Straight(m_navx, m_DriveTrain, 0, 0.3)
-    );
-    */
+    return new resetCommand(m_DriveTrain);
+    /*new SequentialCommandGroup(
+      //new driveCommand(m_DriveTrain, 2.6),
+      dCommand1,
+      //new resetCommand(m_DriveTrain),
+      new driveCommand2(m_DriveTrain,  0.7)
+      );
+    /*new SequentialCommandGroup(
+      ramseteCommand.andThen(() ->  m_DriveTrain.tankDriveVolts(0, 0))
+        //new turnCommand(m_DriveTrain, 0)
+      );   //*/
     //#endregion
   }
   //#endregion
@@ -253,10 +276,12 @@ public class RobotContainer {
     // SET DRIVETRAIN COMMANDS
     m_DriveTrain.setDefaultCommand(new RunCommand(() -> {
       m_DriveTrain.arcadeDrive(pilot.getY(GenericHID.Hand.kLeft), pilot.getX(GenericHID.Hand.kRight));
+      SmartDashboard.putNumber("X", pilot.getX(Hand.kRight));
+      SmartDashboard.putNumber("Y", pilot.getY(Hand.kLeft));
     }, m_DriveTrain));
 
     // SET CLIMBER COMMANDS
-    m_Climb.setDefaultCommand(new RunCommand(()->{
+    /*m_Climb.setDefaultCommand(new RunCommand(()->{
       double delta = COpilot.getTriggerAxis(Hand.kRight) - COpilot.getTriggerAxis(Hand.kLeft);
       if (delta > 0.1) {
         m_Climb.setTelescopic(delta * Constants.TELESCOPIC_SPEED_RAISE);  
@@ -277,7 +302,7 @@ public class RobotContainer {
 
     }, m_Shooter));
 
-    m_Storage.setDefaultCommand(new ControlStorage(m_Storage));
+    m_Storage.setDefaultCommand(new ControlStorage(m_Storage));*/
   }
   //#endregion
 }

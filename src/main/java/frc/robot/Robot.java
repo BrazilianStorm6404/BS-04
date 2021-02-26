@@ -36,11 +36,11 @@ public class Robot extends TimedRobot {
     // Creates UsbCamera and MjpegServer [1] and connects them
     CameraServer.getInstance().startAutomaticCapture();
 
-    // Creates the CvSink and connects it to the UsbCamera
+    /*// Creates the CvSink and connects it to the UsbCamera
     CvSink cvSink = CameraServer.getInstance().getVideo();
 
     // Creates the CvSource and MjpegServer [2] and connects them
-    CvSource outputStream = CameraServer.getInstance().putVideo("Teste", 640, 480);
+    CvSource outputStream = CameraServer.getInstance().putVideo("Teste", 640, 480);*/
     m_robotContainer = new RobotContainer();
   }
 

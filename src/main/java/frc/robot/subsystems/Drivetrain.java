@@ -93,7 +93,7 @@ public class Drivetrain extends PIDSubsystem {
     encoderRightEntry.forceSetDouble(this.getEncoderRight());
     pose2dX.forceSetDouble(m_odometry.getPoseMeters().getX());
     pose2dY.forceSetDouble(m_odometry.getPoseMeters().getY());
-    navXdata.forceSetDouble(_navX.getYaw());
+    navXdata.forceSetDouble(getHeading());
 
     // Atualização de odometria para PathWeaver
     m_odometry.update(Rotation2d.fromDegrees(getHeading()), encoderLeft.getDistance(), encoderRight.getDistance());
@@ -138,9 +138,13 @@ public class Drivetrain extends PIDSubsystem {
    * @param rightVolts voltagem do grupo direito
    */
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    _left.setVoltage(-leftVolts);
-    _right.setVoltage(rightVolts);
+    _left.setVoltage(leftVolts);//rightVolts);
+    _right.setVoltage(-rightVolts);//-leftVolts);
     m_drive.feed();
+  }
+
+  public void resetNavx() {
+    _navX.reset();
   }
 
   /**
@@ -184,7 +188,7 @@ public class Drivetrain extends PIDSubsystem {
    * @return the value of the heading of the robot
    */
   public double getHeading() {
-    return Math.IEEEremainder(this._navX.getYaw(), 360);// * -1.0d;
+    return _navX.getAngle();//Math.IEEEremainder(_navX.getYaw(), 360); //* -1.0d;
   }
 
   /**
@@ -212,7 +216,7 @@ public class Drivetrain extends PIDSubsystem {
    * @param rot value from 1 to 0 for the robot to rotate the robot
    */
   public void arcadeDrive(double fwd, double rot) {
-    m_drive.arcadeDrive(fwd, rot);
+    m_drive.arcadeDrive(-fwd, rot);
   }
 
   /**
@@ -232,4 +236,6 @@ public class Drivetrain extends PIDSubsystem {
   protected double getMeasurement() {
     return _navX.getYaw();
   }
+
+  
 }
