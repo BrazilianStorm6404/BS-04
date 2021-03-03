@@ -4,19 +4,61 @@
 
 package frc.robot.commands;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.DataStructure;
 import frc.robot.subsystems.Drivetrain;
 
 public class resetCommand extends CommandBase {
 
   private Drivetrain drivetrain;
-  private boolean finished = false;
+  private boolean finished = false, angled = false;
+  File f = new File("/home/lvuser/Logs/joystick.txt");
+  /*private DataStructure[] datalist = { new DataStructure(false, 1.0, -0.9, 0.4), // D1
+      new DataStructure(true, -90.0, 0.0, -0.8), // G1
+      new DataStructure(false, 1.0, -0.9, 0.4), // D2
+      new DataStructure(true, 90.0, 0.0, 0.8), // G2
+      new DataStructure(false, 2.7, -0.9, 0.4), // D3
+      new DataStructure(true, 90.0, 0.0, 0.8), // G3
+      new DataStructure(false, 1.0, -0.9, 0.4), // D4
+      new DataStructure(true, -90.0, 0.0, -0.8), // G4
+      new DataStructure(false, 1.0, -0.9, 0.4), // D5
+      new DataStructure(true, -90.0, 0.0, -0.8), // G5
+      new DataStructure(false, 1.0, -0.9, 0.4), // D6
+      new DataStructure(true, -90.0, 0.0, -0.8), // G6
+      new DataStructure(false, 1.0, -0.9, 0.4), // D7
+      new DataStructure(true, -90.0, 0.0, -0.8), // G7
+      new DataStructure(false, 1.0, -0.9, 0.4), // D8
+      new DataStructure(true, 90.0, 0.0, 0.8), // G8
+      new DataStructure(false, 2.7, -0.9, 0.4), // D9
+      new DataStructure(true, 90.0, 0.0, 0.8), // G9
+      new DataStructure(false, 1.0, -0.9, 0.4), // D10
+      new DataStructure(true, -90.0, 0.0, -0.8), // G10
+      new DataStructure(false, 1.0, -0.9, 0.4) // D11
+  };*/
   Timer timer = new Timer();
+  double angle = 0;
+  Scanner myReader;
+
   /** Creates a new resetCommand. */
   public resetCommand(Drivetrain m_Drivetrain) {
     addRequirements(m_Drivetrain);
-    drivetrain= m_Drivetrain;
+    drivetrain = m_Drivetrain;
+    try {
+      myReader = new Scanner(f);
+    } catch (FileNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -31,74 +73,110 @@ public class resetCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double forward = -0.9, turn = 0.8, correct = 0.4, time = timer.get();
+    //double forward = -0.6, turn = 0.6, correct = 0, time = timer.get();
     // 90 graus 0.5
     // ~1.73m/s
-
-    // ------------- S H A L O M ---------------
-    if (time < 0.6) {
+    // incrementos de 1m
+      if (f.exists() && f.canRead()) {
+          if(myReader.hasNextLine()) {
+            String data = myReader.nextLine();
+            String[] array = data.split("i");
+            SmartDashboard.putString("key", data);
+            drivetrain.arcadeDrive(Double.parseDouble(array[0]), Double.parseDouble(array[1]));
+          } else {
+            myReader.close();
+            finished = true;
+          }
+      }
+    /*
+     * if(timer.get() > 0.5) { for(int i = 0; i < datalist.length; i++) {
+     * while(datalist[i].valor > Math.abs(datalist[i].girar ?
+     * drivetrain.getHeading() : drivetrain.getEncoderLeft())) {
+     * drivetrain.arcadeDrive(datalist[i].forward, datalist[i].rot); }
+     * drivetrain.resetEncoders(); drivetrain.zeroHeading(); } }
+     */  
+    
+    /*// ------------- S H A L O M ---------------
+    if (time < 1.6) {
       // D1
       drivetrain.arcadeDrive(forward, correct);
-    } else if (time < 1.0) {
+    } else if (time < 3.5) {
       // G1
       drivetrain.arcadeDrive(0, -turn);
-    } else if (time < 1.6) {
+    } else if (time < 4.9) {
       // D2
+      angled = false;
        drivetrain.arcadeDrive(forward, correct);
-    } else if (time < 2.0) {
+    } else if (time < 6.6) {
       // G2
       drivetrain.arcadeDrive(0, turn);
-    } else if (time < 3.8) {
+    } else if (time < 9.3) {
       // D3
-      drivetrain.arcadeDrive(forward, correct-0.15);
-    } else if (time < 4.2) {
+      angled = false;
+      drivetrain.arcadeDrive(forward, correct-correct);
+    } /*else if (time < 4.3 ) {
       // G3
+      if(!angled) {
+        angle = drivetrain.getHeading();
+      }
+      angled = true;
       drivetrain.arcadeDrive(0, turn);
-    } else if (time < 4.8) {
+    } else if (time < 4.9) {
       // D4
+      angled = false;
       drivetrain.arcadeDrive(forward, correct);
-    } else if (time < 5.2) {
+    } else if (time < 5.3) {
       // G4
       drivetrain.arcadeDrive(0, -turn);
-    } else if (time < 5.8) {
+    } else if (time < 6.0) {
       // D5
+      angled = false;
       drivetrain.arcadeDrive(forward, correct);
-    } else if (time < 6.2) {
+    } else if (time < 6.5) {
       // G5
+      angled = true;
       drivetrain.arcadeDrive(0, -turn);
-    } else if (time < 6.8) {
+    } else if (time < 7.1) {
       // D6
+      angled = false;
       drivetrain.arcadeDrive(forward, correct);
-    } else if (time < 7.2) {
+    } else if (time < 7.5) {
       // G6
       drivetrain.arcadeDrive(0, -turn);
-    } else if (time < 7.8) {
+    } else if (time < 8.0) {
       // D7
       drivetrain.arcadeDrive(forward, correct);
-    } else if (time < 8.2) {
+    } else if (time < 8.4) {
       // G7
+
+      angled = true;
       drivetrain.arcadeDrive(0, -turn);
-    } else if (time < 8.8) {
+    } else if (time < 9.0) {
       // D8
+      angled = false;
       drivetrain.arcadeDrive(forward, correct);
-    } else if (time < 9.2) {
+    } else if (time < 9.4) {
       // G8
       drivetrain.arcadeDrive(0, turn);
-    } else if( time < 10.9) {
+    } else if( time < 11.0) {
       // D9
-      drivetrain.arcadeDrive(forward, correct-0.15);
-    } else if (time < 11.3) {
+      angled = false;
+      drivetrain.arcadeDrive(forward, correct);
+    } else if (time < 11.4 ) {
       // G9
       drivetrain.arcadeDrive(0, turn);
-    } else if (time < 11.9) {
+    } else if (time < 12.0) {
       // D10
+      angled = false;
       drivetrain.arcadeDrive(forward, correct);
-    } else if (time < 12.3) {
+    } else if (time < 12.4) {
       // G10
       drivetrain.arcadeDrive(0, -turn);
-    } else if (time < 13.9) {
+    } else if (time < 13.0) {
       // D11
       drivetrain.arcadeDrive(forward, correct);
+    } else {
+      finished = true;
     }
     //*/
 

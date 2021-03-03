@@ -23,7 +23,7 @@ public class driveCommand extends PIDCommand {
 	public driveCommand(Drivetrain m_Drivetrain, double end) {
 		super(
 				// The controller that the command will use
-				new PIDController(Constants.Autonomous.kPDriveVel * 50, 0, 0),
+				new PIDController(Constants.Autonomous.kPDriveVel, 0, 0),
 				// This should return the measurement
 				() -> {
 					if(!start) {
@@ -39,7 +39,7 @@ public class driveCommand extends PIDCommand {
 				output -> {
 					m_Drivetrain.arcadeDrive(-output, 0);
 					SmartDashboard.putBoolean("key"+ i, finished);
-					if (Math.abs(output) < 0.05) {
+					if (Math.abs(output) < 0.5) {
 						finished = true;
 					};
 				});
