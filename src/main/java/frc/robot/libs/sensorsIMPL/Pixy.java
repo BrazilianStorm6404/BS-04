@@ -13,6 +13,7 @@ import io.github.pseudoresonance.pixy2api.Pixy2;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
 import io.github.pseudoresonance.pixy2api.links.I2CLink;
+import io.github.pseudoresonance.pixy2api.links.SPILink;
 
 /**
  * Add your docs here.
@@ -20,10 +21,10 @@ import io.github.pseudoresonance.pixy2api.links.I2CLink;
 public class Pixy {
     private Pixy2 pixy;
 
-    public void initialize() {
-        pixy = Pixy2.createInstance(new I2CLink());
+    public Pixy() {
+        pixy = Pixy2.createInstance(new SPILink());
         pixy.init();
-        pixy.setLamp((byte) 1, (byte) 0);
+        pixy.setLamp((byte) 0, (byte) 0);
     }
 
     public Block getBiggestBlock() {

@@ -17,7 +17,7 @@ public final class Constants {
     public static final double TELESCOPIC_SPEED_RAISE = 0.9;
     public static final double TELESCOPIC_SPEED_LOWER = 0.2;
     public static final double SHOOTING_SPEED = 1;
-    public static final double INTAKE_SPEED = 1;
+    public static final double INTAKE_SPEED = .8;
     public static final double SHOOTER_BELT_SPEED = 1;
     public static final double STORAGE_BELT_SPEED = -0.4;
 
@@ -58,7 +58,7 @@ public final class Constants {
 
             //CAN
             public static final int INTAKE_ANGLE = 4; 
-            public static final int INTAKE_COLLECTOR = 6; 
+            public static final int INTAKE_COLLECTOR = 1;//6; 
 
             public static final int STORAGE_BELT = 10; 
             public static final int SHOOTER_SHOOT = 11;

@@ -18,6 +18,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
+import io.github.pseudoresonance.pixy2api.Pixy2;
+import io.github.pseudoresonance.pixy2api.Pixy2CCC;
+import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
+import io.github.pseudoresonance.pixy2api.links.I2CLink;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -53,6 +58,7 @@ import frc.robot.commands.driveCommand;
 import frc.robot.commands.driveCommand2;
 import frc.robot.commands.resetCommand;
 import frc.robot.commands.turnCommand;
+import frc.robot.libs.sensorsIMPL.Pixy;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
@@ -73,6 +79,7 @@ public class RobotContainer {
   // Sensores
   private AHRS m_navx;
   private Gyro gyro;
+  Pixy pixy;
   // This must be refactored
   // private Encoder_AMT103 encoderT1;
   // private PowerDistributionPanel m_PDP;
@@ -85,6 +92,8 @@ public class RobotContainer {
 
   // MOTORS
   WPI_VictorSPX intake;
+
+  Block b;
 
   // SHUFFLEBOARD
   PrintWriter log = null;
@@ -147,22 +156,18 @@ public class RobotContainer {
      */
 
     // Botão INTAKE
-    /*
-     * pilot_ButtonA.whenPressed(() ->
-     * intake.set(-Constants.INTAKE_SPEED),m_Storage) .whenReleased(() ->
-     * intake.set(0), m_Storage);
-     * 
-     * // Botão STORAGE/CONVEYOR pilot_ButtonX.whileHeld(() ->
-     * m_Storage.MoveBelt(Constants.STORAGE_BELT_SPEED), m_Storage) .whenReleased(()
-     * -> m_Storage.MoveBelt(0), m_Storage);
-     * 
-     * // Botão SHOOTER pilot_RB.whileHeld(new Shoot(m_Shooter, m_Storage, m_PDP))
-     * .whenReleased(() -> m_Shooter.Stop());
-     */
-
-    pilot_ButtonA.whenHeld(new SequentialCommandGroup(new driveCommand(m_DriveTrain, 2.6),
-        new resetCommand(m_DriveTrain), new driveCommand(m_DriveTrain, 2.7)));
-
+    
+      pilot_ButtonA.whenPressed(() ->
+      intake.set(-Constants.INTAKE_SPEED)) .whenReleased(() ->
+      intake.set(0));
+    /*  
+      // Botão STORAGE/CONVEYOR pilot_ButtonX.whileHeld(() ->
+      m_Storage.MoveBelt(Constants.STORAGE_BELT_SPEED), m_Storage) .whenReleased(()
+      -> m_Storage.MoveBelt(0), m_Storage);
+      
+      // Botão SHOOTER pilot_RB.whileHeld(new Shoot(m_Shooter, m_Storage, m_PDP))
+      .whenReleased(() -> m_Shooter.Stop());
+    //*/ 
   }
   // #endregion
 
@@ -191,6 +196,8 @@ public class RobotContainer {
     // m_PDP = new PowerDistributionPanel(Constants.Ports.Sensors.PDP_PORT);
 
     // COMMANDS
+    pixy = new Pixy();
+
   }
 
   // #region AUTONOMOUS
@@ -253,7 +260,7 @@ public class RobotContainer {
      */
     // Run path following command, then stop at the end.
 
-    return new resetCommand(m_DriveTrain);
+    return new resetCommand(m_DriveTrain,pixy);
     // new resetCommand(m_DriveTrain);
     /*
      * new SequentialCommandGroup( //new driveCommand(m_DriveTrain, 2.6), dCommand1,
@@ -279,6 +286,7 @@ public class RobotContainer {
       SmartDashboard.putNumber("Y", pilot.getY(Hand.kLeft));
       log.println(pilot.getY(GenericHID.Hand.kLeft) + "i" + pilot.getX(GenericHID.Hand.kRight));
       log.flush();
+      
     }, m_DriveTrain));
 
     // SET CLIMBER COMMANDS
